@@ -318,7 +318,10 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 .nav-credit-name a{color:var(--teal);text-decoration:none;font-weight:600;font-size:.68rem}
 .nav-credit-name a:hover{text-decoration:underline}
 .nav-credit-copy{font-size:.62rem;color:var(--mist)}
-.nav-tagline{font-family:'Playfair Display',serif;font-style:italic;font-size:1.08rem;color:var(--rust);line-height:1.35;opacity:.85;white-space:nowrap;padding-left:8px;border-left:2px solid var(--rust-light);margin-left:6px}
+.nav-tagline-block{display:flex;flex-direction:column;justify-content:center;padding-left:10px;border-left:2px solid var(--rust-light);margin-left:4px}
+.nav-tagline-main{font-family:'Playfair Display',serif;font-style:italic;font-size:.88rem;color:var(--rust);line-height:1.3;white-space:nowrap;opacity:.85}
+.btn-data{font-family:'DM Sans',sans-serif;font-size:.75rem;font-weight:500;padding:5px 11px;border-radius:8px;border:1px solid var(--sand);background:var(--white);color:var(--ink);cursor:pointer;transition:.2s ease;white-space:nowrap}
+.btn-data:hover{background:var(--sand)}
 .trip-deselect-btn{position:absolute;top:8px;left:8px;z-index:3;background:rgba(255,255,255,.88);border:none;border-radius:50%;width:26px;height:26px;font-size:.8rem;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--rust);transition:.2s ease;font-weight:700}
 .trip-deselect-btn:hover{background:var(--danger);color:var(--white);transform:scale(1.1)}
 
@@ -348,12 +351,15 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 <nav id="nav">
   <div class="nav-top">
     <div class="nav-logo">
-      <svg width="240" height="80" viewBox="0 0 240 80" xmlns="http://www.w3.org/2000/svg">
+      <svg width="200" height="68" viewBox="0 0 240 80" xmlns="http://www.w3.org/2000/svg">
         <path d="M36 65 Q10 65 10 44 Q10 27 24 24 Q24 9 41 9 Q52 9 59 17 Q65 11 78 11 Q95 11 100 24 Q112 24 117 35 Q122 65 94 65 Z" fill="#c4522a" opacity="0.13"/>
         <path d="M36 65 Q10 65 10 44 Q10 27 24 24 Q24 9 41 9 Q52 9 59 17 Q65 11 78 11 Q95 11 100 24 Q112 24 117 35 Q122 65 94 65 Z" fill="none" stroke="#c4522a" stroke-width="2.2"/>
         <text x="64" y="46" text-anchor="middle" font-family="'Playfair Display',serif" font-style="italic" font-weight="700" font-size="17" fill="#c4522a" letter-spacing="2">VOYAGE</text>
       </svg>
-      <div class="nav-tagline">Travel smart,<br>spend wiser.</div>
+      <div class="nav-tagline-block">
+        <div class="nav-tagline-main">Travel smart,</div>
+        <div class="nav-tagline-main">spend wiser.</div>
+      </div>
     </div>
     <div class="nav-tabs-wrap">
       <div class="nav-tabs">
@@ -376,7 +382,10 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
   <!-- TRIPS TAB -->
   <div class="tab-content active" id="tab-trips">
     <div class="section-header">
-      <h2 class="section-title">My Trips</h2>
+      <div>
+        <h2 class="section-title">My Trips</h2>
+        <p style="font-family:'Playfair Display',serif;font-style:italic;font-size:.9rem;color:var(--rust);margin-top:2px;opacity:.85">The travel planner that actually respects your wallet.</p>
+      </div>
       <button class="btn btn-primary" onclick="openModal('modal-trip')">+ New Trip</button>
     </div>
     <div id="trips-list"></div>
@@ -900,7 +909,8 @@ function updateNavTrip(){
   const currencyOpts=Object.entries(CURRENCIES).map(([k,v])=>`<option value="${k}" ${k===activeCurrency?'selected':''}>${k}</option>`).join('');
   const tripPill=t?`<div class="active-trip-pill"><span>${t.name}</span><button onclick="deselectTrip()" title="Deselect trip">✕</button></div>`:'';
   const credit=`<div class="nav-credit-block"><span class="nav-credit-name">Dev: <a href="https://www.linkedin.com/in/santiagodarian" target="_blank" rel="noopener">Darian Pulgarin</a></span><span class="nav-credit-copy">© 2026</span></div>`;
-  r.innerHTML=`${credit}<select class="currency-select" onchange="setCurrency(this.value)" title="Change currency">${currencyOpts}</select>${tripPill}`;
+  const dataBtns=`<div style="display:flex;gap:6px"><button class="btn-data" onclick="exportData()" title="Export all data">⬇ Export</button><button class="btn-data" onclick="document.getElementById('import-file-input').click()" title="Import data">⬆ Import</button><input type="file" id="import-file-input" accept=".json" style="display:none" onchange="importData(this)"></div>`;
+  r.innerHTML=`${credit}${dataBtns}<select class="currency-select" onchange="setCurrency(this.value)" title="Change currency">${currencyOpts}</select>${tripPill}`;
 }
 function deselectTrip(){localStorage.removeItem(KEYS.active);updateNavTrip();renderItinerary();renderBudget();renderTrips();if(activeTab==='docs')renderDocs()}
 function deSelectFromCard(){deselectTrip()}
@@ -1684,6 +1694,55 @@ function fileIcon(type){
   if(type.includes('text'))return'📋';
   if(type.includes('mail'))return'📧';
   return'📎';
+}
+
+// ===== EXPORT / IMPORT =====
+function exportData(){
+  const payload={
+    _version:1,
+    _exported:new Date().toISOString(),
+    trips:loadData(KEYS.trips),
+    stops:loadData(KEYS.stops),
+    expenses:loadData(KEYS.expenses),
+    budgets:loadData(KEYS.budgets),
+    events:loadData(KEYS.events),
+    places:loadData(KEYS.places),
+    docs:loadData(KEYS.docs),
+    currency:localStorage.getItem('voyage_currency')||'USD'
+  };
+  const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download='voyage-backup-'+todayStr()+'.json';
+  a.click();URL.revokeObjectURL(a.href);
+  showToast('Data exported!','success');
+}
+function importData(input){
+  const file=input.files[0];if(!file)return;
+  const reader=new FileReader();
+  reader.onload=ev=>{
+    try{
+      const d=JSON.parse(ev.target.result);
+      if(!d.trips||!d._version)throw new Error('Invalid file');
+      if(!confirm('This will replace ALL your current data. Continue?')){input.value='';return}
+      saveData(KEYS.trips,d.trips||[]);
+      saveData(KEYS.stops,d.stops||[]);
+      saveData(KEYS.expenses,d.expenses||[]);
+      saveData(KEYS.budgets,d.budgets||[]);
+      saveData(KEYS.events,d.events||[]);
+      saveData(KEYS.places,d.places||[]);
+      saveData(KEYS.docs,d.docs||[]);
+      if(d.currency)localStorage.setItem('voyage_currency',d.currency);
+      activeCurrency=d.currency||'USD';
+      localStorage.removeItem(KEYS.active);
+      input.value='';
+      updateNavTrip();updateCurrencyPrefixes();renderTab(activeTab);
+      showToast('Data imported successfully!','success');
+    }catch(e){
+      showToast('Invalid backup file','error');input.value='';
+    }
+  };
+  reader.readAsText(file);
 }
 
 // ===== MOBILE WARNING =====
