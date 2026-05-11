@@ -319,7 +319,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 .nav-credit-name a:hover{text-decoration:underline}
 .nav-credit-copy{font-size:.62rem;color:var(--mist)}
 .nav-tagline-block{display:flex;flex-direction:column;justify-content:center;padding-left:10px;border-left:2px solid var(--rust-light);margin-left:4px}
-.nav-tagline-main{font-family:'Playfair Display',serif;font-style:italic;font-size:.88rem;color:var(--rust);line-height:1.3;white-space:nowrap;opacity:.85}
+.nav-tagline-main{font-family:'Playfair Display',serif;font-style:italic;font-size:1rem;color:var(--rust);line-height:1.3;white-space:nowrap;opacity:.85}
 .btn-data{font-family:'DM Sans',sans-serif;font-size:.75rem;font-weight:500;padding:5px 11px;border-radius:8px;border:1px solid var(--sand);background:var(--white);color:var(--ink);cursor:pointer;transition:.2s ease;white-space:nowrap}
 .btn-data:hover{background:var(--sand)}
 .trip-deselect-btn{position:absolute;top:8px;left:8px;z-index:3;background:rgba(255,255,255,.88);border:none;border-radius:50%;width:26px;height:26px;font-size:.8rem;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--rust);transition:.2s ease;font-weight:700}
@@ -456,7 +456,10 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
   <div class="tab-content" id="tab-calendar">
     <div class="cal-header">
       <button class="cal-nav-btn" onclick="calPrev()">&#8592;</button>
-      <h2 class="cal-title" id="cal-title"></h2>
+      <div style="text-align:center">
+        <h2 class="cal-title" id="cal-title"></h2>
+        <div id="cal-month-subtitle" style="font-size:.78rem;color:var(--ink);font-family:'DM Sans',sans-serif;margin-top:4px"></div>
+      </div>
       <button class="cal-nav-btn" onclick="calNext()">&#8594;</button>
     </div>
     <div class="cal-grid-wrap">
@@ -466,6 +469,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
       </div>
       <div class="cal-grid" id="cal-grid"></div>
     </div>
+    <div id="cal-month-summary" style="margin-top:32px"></div>
   </div>
 </div>
 
@@ -1483,6 +1487,7 @@ function calNext(){calMonth++;if(calMonth>11){calMonth=0;calYear++}renderCalenda
 function renderCalendar(){
   const months=['January','February','March','April','May','June','July','August','September','October','November','December'];
   document.getElementById('cal-title').textContent=`${months[calMonth]} ${calYear}`;
+  document.getElementById('cal-month-subtitle').textContent=`👇 Just below the calendar — your complete ${months[calMonth]} ${calYear} money picture: budget, savings, and everything you spent this month.`;
   const grid=document.getElementById('cal-grid');grid.innerHTML='';
   const first=new Date(calYear,calMonth,1);
   const last=new Date(calYear,calMonth+1,0);
@@ -1519,6 +1524,50 @@ function renderCalendar(){
     dayStops.slice(0,2).forEach(s=>{html+=`<div class="cal-event-row teal-txt">${esc(s.placeName)}</div>`});
     cell.innerHTML=html;grid.appendChild(cell);
   });
+
+  // ── Monthly budget summary ──
+  const monthStart=`${calYear}-${String(calMonth+1).padStart(2,'0')}-01`;
+  const monthEnd=`${calYear}-${String(calMonth+1).padStart(2,'0')}-${String(last.getDate()).padStart(2,'0')}`;
+  const allExpenses=loadData(KEYS.expenses);
+  // trips active this month
+  const monthTrips=trips.filter(t=>t.startDate&&t.endDate&&t.startDate<=monthEnd&&t.endDate>=monthStart);
+  const summaryEl=document.getElementById('cal-month-summary');
+  if(!monthTrips.length){summaryEl.innerHTML='';return;}
+  let totalSpent=0,totalBudget=0;
+  const cards=monthTrips.map(t=>{
+    const tripExp=allExpenses.filter(e=>e.tripId===t.id&&e.date>=monthStart&&e.date<=monthEnd);
+    const spent=tripExp.reduce((s,e)=>s+e.amount,0);
+    totalSpent+=spent;totalBudget+=t.totalBudget||0;
+    const pct=t.totalBudget?Math.min(100,(spent/t.totalBudget)*100):0;
+    const barColor=pct>=100?'var(--danger)':pct>=70?'var(--warning)':'var(--success)';
+    const over=t.totalBudget>0&&spent>t.totalBudget;
+    return`<div class="stat-card" style="text-align:left;padding:16px 20px">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+        <div style="font-weight:600;font-size:.95rem;font-family:'Playfair Display',serif">${esc(t.name)}</div>
+        <div style="font-size:.78rem;color:var(--mist)">${esc(t.destination)}</div>
+      </div>
+      <div style="display:flex;justify-content:space-between;font-family:'DM Mono',monospace;font-size:.85rem;margin-bottom:6px">
+        <span style="color:${over?'var(--danger)':'var(--teal)'}">Spent: ${fmt(spent)}</span>
+        ${t.totalBudget?`<span style="color:var(--mist)">Budget: ${fmt(t.totalBudget)}</span>`:'<span style="color:var(--mist)">No budget set</span>'}
+      </div>
+      ${t.totalBudget?`<div class="progress-bar"><div class="progress-fill" style="width:${pct}%;background:${barColor}"></div></div>`:''}
+    </div>`;
+  }).join('');
+  const overallPct=totalBudget?Math.min(100,(totalSpent/totalBudget)*100):0;
+  const overallColor=totalBudget>0&&totalSpent>totalBudget?'var(--danger)':'var(--success)';
+  const totalSaved=totalBudget>0?totalBudget-totalSpent:0;
+  const savedColor=totalSaved>=0?'var(--success)':'var(--danger)';
+  summaryEl.innerHTML=`
+    <h3 style="font-size:1.4rem;font-weight:700;margin-bottom:16px;font-family:'Playfair Display',serif;text-align:center">
+      Total amount spent/budget for the month of ${months[calMonth]} ${calYear}
+    </h3>
+    <div class="cards-grid" style="margin-bottom:20px">${cards}</div>
+    <div class="stat-card" style="display:flex;align-items:center;justify-content:space-between;padding:16px 24px;gap:24px">
+      <div><div class="stat-label">Total Spent This Month</div><div class="stat-value mono" style="color:${overallColor}">${fmt(totalSpent)}</div></div>
+      ${totalBudget?`<div><div class="stat-label">Combined Budget</div><div class="stat-value gold mono">${fmt(totalBudget)}</div></div>`:''}
+      ${totalBudget?`<div style="flex:1"><div class="progress-bar" style="height:8px"><div class="progress-fill" style="width:${overallPct}%;background:${overallColor}"></div></div><div style="font-size:.75rem;color:var(--mist);margin-top:4px;font-family:'DM Mono',monospace">${overallPct.toFixed(0)}% of combined budget</div></div>`:''}
+      ${totalBudget?`<div><div class="stat-label">Amount Saved</div><div class="stat-value mono" style="color:${savedColor}">${fmt(Math.abs(totalSaved))}${totalSaved<0?' over':' saved'}</div></div>`:''}
+    </div>`;
 }
 function openDayPanel(ds){
   const trips=loadData(KEYS.trips);
