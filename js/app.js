@@ -52,13 +52,39 @@ function fabClick(){
 // ===== NAV =====
 function updateNavTrip(){
   const t=getActiveTrip();const r=document.getElementById('nav-right');
-  const currencyOpts=Object.entries(CURRENCIES).map(([k,v])=>`<option value="${k}" ${k===activeCurrency?'selected':''}>${k}</option>`).join('');
   const tripPill=t?`<div class="active-trip-pill"><span>${t.name}</span><button onclick="deselectTrip()" title="Deselect trip">✕</button></div>`:'';
-  const credit=`<div class="nav-credit-block"><span class="nav-credit-name">Dev: <a href="https://www.linkedin.com/in/santiagodarian" target="_blank" rel="noopener">Darian Pulgarin</a></span><span class="nav-credit-copy">© 2026</span></div>`;
-  const dataBtns=`<div style="display:flex;gap:6px"><button class="btn-data" onclick="exportData()" title="Export all data">⬇ Export</button><button class="btn-data" onclick="document.getElementById('import-file-input').click()" title="Import data">⬆ Import</button><input type="file" id="import-file-input" accept=".json" style="display:none" onchange="importData(this)"></div>`;
-  r.innerHTML=`${credit}${dataBtns}<select class="currency-select" onchange="setCurrency(this.value)" title="Change currency">${currencyOpts}</select>${tripPill}`;
+  const settingsBtn=`<div class="settings-wrap">
+    <button class="settings-btn" onclick="toggleSettings(event)" title="Settings" aria-label="Settings">⚙</button>
+    <div class="settings-menu" id="settings-menu">
+      <div class="settings-section">
+        <div class="settings-label">Currency</div>
+        <select class="currency-select" onchange="setCurrency(this.value)">${Object.entries(CURRENCIES).map(([k])=>`<option value="${k}" ${k===activeCurrency?'selected':''}>${k}</option>`).join('')}</select>
+      </div>
+      <div class="settings-section">
+        <div class="settings-label">Backup</div>
+        <button class="settings-action" onclick="exportData()">⬇ Export data</button>
+        <button class="settings-action" onclick="document.getElementById('import-file-input').click()">⬆ Import data</button>
+        <input type="file" id="import-file-input" accept=".json" style="display:none" onchange="importData(this)">
+      </div>
+    </div>
+  </div>`;
+  r.innerHTML=`${settingsBtn}${tripPill}`;
 }
 function deselectTrip(){localStorage.removeItem(KEYS.active);updateNavTrip();renderItinerary();renderBudget();renderTrips();if(activeTab==='docs')renderDocs()}
+
+// ===== SETTINGS DROPDOWN =====
+function toggleSettings(e){
+  e.stopPropagation();
+  const menu=document.getElementById('settings-menu');
+  if(!menu)return;
+  menu.classList.toggle('open');
+}
+document.addEventListener('click',e=>{
+  const menu=document.getElementById('settings-menu');
+  if(menu&&menu.classList.contains('open')&&!e.target.closest('.settings-wrap')){
+    menu.classList.remove('open');
+  }
+});
 function deSelectFromCard(){deselectTrip()}
 function tripXClick(id,btn){
   if(btn.dataset.confirming==='1'){deleteTrip(id);return;}
@@ -95,6 +121,7 @@ function clearCoverImage(){
 
 // ===== TRIPS =====
 let editingTripId=null;
+let justSavedTripId=null;
 function openTripModal(id=null){
   editingTripId=id;selectedColor=0;
   const t=id?loadData(KEYS.trips).find(x=>x.id===id):null;
@@ -139,9 +166,12 @@ function saveTrip(){
   };
   if(editingTripId){const i=trips.findIndex(t=>t.id===editingTripId);trips[i]=obj}
   else trips.push(obj);
+  const savedId=obj.id;
   editingTripId=null;
   try{saveData(KEYS.trips,trips)}catch(e){showToast('Storage full — try removing the cover image','error');return}
+  justSavedTripId=savedId;
   closeModal('modal-trip');renderTrips();showToast('Trip saved!','success');
+  setTimeout(()=>{justSavedTripId=null},1000);
   updateNavTrip();
 }
 function deleteTrip(id){
@@ -167,10 +197,10 @@ function renderTrips(){
     const spent=expenses.filter(e=>e.tripId===t.id).reduce((s,e)=>s+e.amount,0);
     const pct=t.totalBudget?Math.min(100,(spent/t.totalBudget)*100):0;
     const barColor=pct>=100?'var(--danger)':pct>=70?'var(--warning)':'var(--success)';
-    return`<div class="card" style="cursor:pointer" onclick="selectTrip('${t.id}',event)">
+    return`<div class="card${t.id===justSavedTripId?' just-added':''}" style="cursor:pointer" onclick="selectTrip('${t.id}',event)">
       <div class="card-actions">
-        <button class="icon-btn" onclick="openTripModal('${t.id}')" title="Edit">✏️</button>
-        <button class="icon-btn" onclick="confirmDelete('trip','${t.id}',event)" title="Delete">🗑</button>
+        <button class="icon-btn" onclick="event.stopPropagation();openTripModal('${t.id}')" title="Edit">✏️</button>
+        <button class="icon-btn" onclick="event.stopPropagation();confirmDelete('trip','${t.id}',event)" title="Delete">🗑</button>
       </div>
       <button class="trip-deselect-btn" id="xbtn-${t.id}" onclick="event.stopPropagation();tripXClick('${t.id}',this)" title="Remove trip">✕</button>
       <div class="trip-card-header cg-${t.coverColor}" style="${t.coverImage?`background-image:url('${t.coverImage}');background-size:cover;background-position:center`:''}"></div>

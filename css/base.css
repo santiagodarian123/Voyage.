@@ -1,18 +1,24 @@
 /* Variables, reset, typography — loaded first */
 :root {
-  --ink: #0d0d0d;
-  --paper: #f5f0e8;
-  --sand: #e8dfc8;
-  --rust: #c4522a;
-  --rust-light: #f0d5c8;
-  --gold: #d4a843;
-  --teal: #2a7c7c;
-  --teal-light: #d0e8e8;
-  --mist: #8a9ba8;
-  --white: #ffffff;
-  --danger: #b03a2e;
-  --success: #1e7e5a;
-  --warning: #c17f24;
+  --ink: #2d2520;          /* Espresso — body text, ~13:1 contrast on cream */
+  --paper: #fef6ec;        /* Cream — main background */
+  --sand: #f0e3d0;         /* Warm border / hover */
+  --rust: #ff6b3d;         /* Sunset Coral — primary CTA */
+  --rust-light: #ffd9c8;   /* Soft coral — confirm dialogs */
+  --gold: #ffb84d;         /* Golden Hour — accents */
+  --teal: #06a77d;         /* Jungle Green — active states, success */
+  --teal-light: #c8ede0;   /* Light jungle — pill backgrounds */
+  --mist: #7a6c5d;         /* Warm Taupe — secondary text (readable!) */
+  --white: #ffffff;        /* Crisp white — cards */
+  --danger: #d4361c;       /* Volcanic Red — errors, delete */
+  --success: #06a77d;      /* Jungle Green */
+  --warning: #ffb84d;      /* Golden Hour */
+  --slate: #2d2520;        /* Espresso — accent */
+
+  /* Motion curves (Olivia Le-style) */
+  --ease-silk: cubic-bezier(0.19, 1, 0.22, 1);     /* slow-out, settles */
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1); /* overshoots, bouncy */
+  --ease-snap: cubic-bezier(0.23, 1, 0.32, 1);     /* fast hover-out */
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{font-size:15px;line-height:1.6}

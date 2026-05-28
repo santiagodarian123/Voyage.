@@ -3,8 +3,8 @@
   "short_name": "Voyage",
   "start_url": ".",
   "display": "standalone",
-  "background_color": "#f5f0e8",
-  "theme_color": "#c4522a",
+  "background_color": "#fef6ec",
+  "theme_color": "#ff6b3d",
   "icons": [
     {
       "src": "assets/icons/icon-192.svg",

@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta name="theme-color" content="#c4522a">
+<meta name="theme-color" content="#ff6b3d">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="Voyage">
@@ -19,6 +19,62 @@
 </head>
 <body>
 
+<!-- ANIMATED DUNES BACKGROUND -->
+<div class="dunes" aria-hidden="true">
+  <svg class="dune dune-back" viewBox="0 0 2400 400" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="duneGradBack" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#ffd9c8" stop-opacity="0.55"/>
+        <stop offset="100%" stop-color="#ffb84d" stop-opacity="0.35"/>
+      </linearGradient>
+    </defs>
+    <path d="M0,260 Q150,220 300,260 T600,260 T900,260 T1200,260 T1500,260 T1800,260 T2100,260 T2400,260 L2400,400 L0,400 Z" fill="url(#duneGradBack)"/>
+  </svg>
+  <svg class="dune dune-mid" viewBox="0 0 2400 400" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="duneGradMid" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#ffb84d" stop-opacity="0.55"/>
+        <stop offset="100%" stop-color="#ff8c5a" stop-opacity="0.45"/>
+      </linearGradient>
+    </defs>
+    <path d="M0,300 Q120,250 240,300 T480,300 T720,300 T960,300 T1200,300 T1440,300 T1680,300 T1920,300 T2160,300 T2400,300 L2400,400 L0,400 Z" fill="url(#duneGradMid)"/>
+  </svg>
+  <svg class="dune dune-front" viewBox="0 0 2400 400" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="duneGradFront" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#ff8c5a" stop-opacity="0.55"/>
+        <stop offset="100%" stop-color="#ff6b3d" stop-opacity="0.5"/>
+      </linearGradient>
+    </defs>
+    <path d="M0,340 Q100,290 200,340 T400,340 T600,340 T800,340 T1000,340 T1200,340 T1400,340 T1600,340 T1800,340 T2000,340 T2200,340 T2400,340 L2400,400 L0,400 Z" fill="url(#duneGradFront)"/>
+  </svg>
+  <!-- Camel silhouette walking across the back dune horizon -->
+  <svg class="camel" viewBox="0 0 60 40" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <g fill="#7a3a1f" opacity="0.7">
+      <!-- body -->
+      <ellipse cx="28" cy="22" rx="14" ry="5"/>
+      <!-- humps -->
+      <path d="M18,22 Q21,12 25,15 Q27,18 28,22 Z"/>
+      <path d="M28,22 Q31,11 35,14 Q37,17 38,22 Z"/>
+      <!-- neck (S-curve up and forward, shorter) -->
+      <path d="M40,22 Q42,19 44,16 Q45,13 47,12 L48,15 Q46,16 45,18 Q44,20 43,22 Z"/>
+      <!-- head -->
+      <path d="M46,11 Q51,10 51,14 Q51,16 49,17 Q47,17 46,15 Q45,13 46,11 Z"/>
+      <!-- muzzle/snout -->
+      <path d="M49,15 Q53,15 52,17 Q50,17 49,16 Z"/>
+      <!-- ear -->
+      <path d="M48,11 L49,8 L50,11 Z"/>
+      <!-- legs -->
+      <rect class="camel-leg camel-leg-1" x="18" y="26" width="2" height="11"/>
+      <rect class="camel-leg camel-leg-2" x="24" y="26" width="2" height="11"/>
+      <rect class="camel-leg camel-leg-3" x="32" y="26" width="2" height="11"/>
+      <rect class="camel-leg camel-leg-4" x="38" y="26" width="2" height="11"/>
+      <!-- tail -->
+      <path d="M14,21 Q10,22 9,25 Q11,24 13,23 Z"/>
+    </g>
+  </svg>
+</div>
+
 <!-- iOS INSTALL HINT -->
 <div id="ios-install-hint" role="dialog" aria-label="Install Voyage">
   <div class="ios-hint-body">
@@ -32,14 +88,12 @@
 <nav id="nav">
   <div class="nav-top">
     <div class="nav-logo">
-      <svg width="200" height="68" viewBox="0 0 240 80" xmlns="http://www.w3.org/2000/svg">
-        <path d="M36 65 Q10 65 10 44 Q10 27 24 24 Q24 9 41 9 Q52 9 59 17 Q65 11 78 11 Q95 11 100 24 Q112 24 117 35 Q122 65 94 65 Z" fill="#c4522a" opacity="0.13"/>
-        <path d="M36 65 Q10 65 10 44 Q10 27 24 24 Q24 9 41 9 Q52 9 59 17 Q65 11 78 11 Q95 11 100 24 Q112 24 117 35 Q122 65 94 65 Z" fill="none" stroke="#c4522a" stroke-width="2.2"/>
-        <text x="64" y="46" text-anchor="middle" font-family="'Playfair Display',serif" font-style="italic" font-weight="700" font-size="17" fill="#c4522a" letter-spacing="2">VOYAGE</text>
-      </svg>
-      <div class="nav-tagline-block">
-        <div class="nav-tagline-main">Travel smart,</div>
-        <div class="nav-tagline-main">spend wiser.</div>
+      <div class="logo-mark" aria-label="Voyage">
+        <svg width="200" height="68" viewBox="0 0 240 80" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path d="M36 65 Q10 65 10 44 Q10 27 24 24 Q24 9 41 9 Q52 9 59 17 Q65 11 78 11 Q95 11 100 24 Q112 24 117 35 Q122 65 94 65 Z" fill="#ff6b3d" opacity="0.13"/>
+          <path d="M36 65 Q10 65 10 44 Q10 27 24 24 Q24 9 41 9 Q52 9 59 17 Q65 11 78 11 Q95 11 100 24 Q112 24 117 35 Q122 65 94 65 Z" fill="none" stroke="#ff6b3d" stroke-width="2.2"/>
+        </svg>
+        <div class="logo-text"><span>V</span><span>O</span><span>Y</span><span>A</span><span>G</span><span>E</span></div>
       </div>
     </div>
     <div class="nav-tabs-wrap">
@@ -55,7 +109,6 @@
     </div>
     <div class="nav-right" id="nav-right"></div>
   </div>
-  <div id="nav-credit" style="position:absolute;right:24px;top:50%;transform:translateY(-50%);pointer-events:none;display:none"></div>
 </nav>
 
 <!-- APP -->
@@ -67,7 +120,7 @@
         <h2 class="section-title">My Trips</h2>
         <p style="font-family:'Playfair Display',serif;font-style:italic;font-size:.9rem;color:var(--rust);margin-top:2px;opacity:.85">The travel planner that actually respects your wallet.</p>
       </div>
-      <button class="btn btn-primary" onclick="openModal('modal-trip')">+ New Trip</button>
+      <button class="btn btn-primary" onclick="openTripModal()">+ New Trip</button>
     </div>
     <div id="trips-list"></div>
   </div>
@@ -86,7 +139,7 @@
   <div class="tab-content" id="tab-events">
     <div class="section-header">
       <h2 class="section-title">Events & Sports</h2>
-      <button class="btn btn-primary" onclick="openModal('modal-event')">+ Add Event</button>
+      <button class="btn btn-primary" onclick="openEventModal()">+ Add Event</button>
     </div>
     <div id="events-list"></div>
   </div>
@@ -95,7 +148,7 @@
   <div class="tab-content" id="tab-places">
     <div class="section-header">
       <h2 class="section-title">Places</h2>
-      <button class="btn btn-primary" onclick="openModal('modal-place')">+ Add Place</button>
+      <button class="btn btn-primary" onclick="openPlaceModal()">+ Add Place</button>
     </div>
     <div class="places-filters">
       <button class="filter-pill active" data-cat-filter="All" onclick="setCatFilter(this)">All</button>
@@ -498,11 +551,18 @@
 <div id="mobile-warning-bg" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:9999;align-items:center;justify-content:center;">
   <div style="background:#fff;border-radius:16px;padding:32px 28px;max-width:360px;width:90%;box-shadow:0 8px 40px rgba(0,0,0,.22);display:flex;flex-direction:column;gap:14px;text-align:center;">
     <div style="font-size:2.4rem">💻</div>
-    <div style="font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:700;color:#0d0d0d">Laptop view recommended</div>
+    <div style="font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:700;color:#2f3e46">Laptop view recommended</div>
     <div style="font-size:.85rem;color:#6b7280;line-height:1.65">VOYAGE is designed for laptop and desktop screens. For the best experience, open it on your computer.</div>
-    <button onclick="closeMobileWarning()" style="background:#c4522a;color:#fff;border:none;border-radius:10px;padding:11px 24px;font-size:.88rem;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;margin-top:4px">Got it, continue anyway</button>
+    <button onclick="closeMobileWarning()" style="background:#e76f51;color:#fff;border:none;border-radius:10px;padding:11px 24px;font-size:.88rem;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;margin-top:4px">Got it, continue anyway</button>
   </div>
 </div>
+
+<!-- FOOTER -->
+<footer class="site-footer">
+  <span>Built by <a href="https://www.linkedin.com/in/santiagodarian" target="_blank" rel="noopener">Darian Pulgarin</a></span>
+  <span class="footer-sep">·</span>
+  <span>© 2026 Voyage</span>
+</footer>
 
 <script src="js/storage.js"></script>
 <script src="js/app.js"></script>

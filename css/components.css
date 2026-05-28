@@ -2,10 +2,17 @@
 
 /* CARDS */
 .cards-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
-.card{background:var(--white);border-radius:16px;box-shadow:0 2px 12px rgba(0,0,0,.07);transition:.2s ease;overflow:hidden;position:relative}
-.card:hover{box-shadow:0 8px 32px rgba(0,0,0,.13);transform:translateY(-2px)}
-.card-actions{position:absolute;top:8px;right:8px;display:flex;gap:4px;opacity:0;transition:.2s ease}
+.card{background:var(--white);border-radius:16px;box-shadow:0 2px 12px rgba(0,0,0,.07);transition:transform .5s var(--ease-silk),box-shadow .5s var(--ease-silk);overflow:hidden;position:relative}
+.card:hover{box-shadow:0 16px 48px rgba(255,107,61,.18);transform:translateY(-6px) scale(1.01)}
+.card-actions{position:absolute;top:8px;right:8px;display:flex;gap:4px;opacity:1;transition:.2s ease;z-index:5}
 .card:hover .card-actions{opacity:1}
+/* On touch devices, hover doesn't exist — show actions always */
+@media (hover: none){
+  .card-actions,
+  .stop-card .card-actions,
+  .event-card .card-actions,
+  .place-card .card-actions{opacity:1}
+}
 .icon-btn{background:rgba(255,255,255,.9);border:none;border-radius:8px;width:32px;height:32px;cursor:pointer;font-size:1rem;display:flex;align-items:center;justify-content:center;transition:.2s ease}
 .icon-btn:hover{background:var(--white);transform:scale(1.1)}
 
@@ -25,24 +32,24 @@
 .trip-deselect-btn{position:absolute;top:8px;left:8px;z-index:3;background:rgba(255,255,255,.88);border:none;border-radius:50%;width:26px;height:26px;font-size:.8rem;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--rust);transition:.2s ease;font-weight:700}
 .trip-deselect-btn:hover{background:var(--danger);color:var(--white);transform:scale(1.1)}
 
-/* COVER GRADIENTS */
-.cg-0{background:linear-gradient(135deg,var(--teal),var(--gold))}
-.cg-1{background:linear-gradient(135deg,var(--rust),var(--sand))}
-.cg-2{background:linear-gradient(135deg,var(--ink),var(--teal))}
-.cg-3{background:linear-gradient(135deg,var(--gold),var(--rust-light))}
-.cg-4{background:linear-gradient(135deg,#2c3e50,#3498db)}
-.cg-5{background:linear-gradient(135deg,#6a3093,#a044ff)}
-.cg-6{background:linear-gradient(135deg,#11998e,#38ef7d)}
-.cg-7{background:linear-gradient(135deg,#f7971e,#ffd200)}
+/* COVER GRADIENTS — sunset adventure */
+.cg-0{background:linear-gradient(135deg,#ff6b3d,#ffb84d)}                /* Sunset */
+.cg-1{background:linear-gradient(135deg,#06a77d,#ffb84d)}                /* Tropical */
+.cg-2{background:linear-gradient(135deg,#2d2520,#ff6b3d)}                /* Campfire */
+.cg-3{background:linear-gradient(135deg,#ffb84d,#ffd9c8)}                /* Desert dawn */
+.cg-4{background:linear-gradient(135deg,#06a77d,#c8ede0)}                /* Lagoon */
+.cg-5{background:linear-gradient(135deg,#d4361c,#ffb84d)}                /* Volcanic */
+.cg-6{background:linear-gradient(135deg,#ff6b3d,#06a77d)}                /* Coast at dusk */
+.cg-7{background:linear-gradient(135deg,#2d2520,#ffb84d)}                /* Night & gold */
 
 /* BUTTONS */
-.btn{display:inline-flex;align-items:center;gap:8px;padding:10px 20px;border-radius:10px;font-family:'DM Sans',sans-serif;font-size:.9rem;font-weight:500;border:none;cursor:pointer;transition:.2s ease}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:10px 20px;border-radius:10px;font-family:'DM Sans',sans-serif;font-size:.9rem;font-weight:500;border:none;cursor:pointer;transition:transform .35s var(--ease-spring),background .25s var(--ease-snap),box-shadow .35s var(--ease-silk)}
 .btn-primary{background:var(--rust);color:var(--white)}
-.btn-primary:hover{background:#b34826}
+.btn-primary:hover{background:#e85a2c;box-shadow:0 6px 20px rgba(255,107,61,.4);transform:translateY(-1px)}
 .btn-ghost{background:transparent;color:var(--ink);border:1px solid var(--sand)}
 .btn-ghost:hover{background:var(--sand)}
 .btn-teal{background:var(--teal);color:var(--white)}
-.btn-teal:hover{background:#236060}
+.btn-teal:hover{background:#048a66;box-shadow:0 6px 20px rgba(6,167,125,.35);transform:translateY(-1px)}
 .btn-data{font-family:'DM Sans',sans-serif;font-size:.75rem;font-weight:500;padding:5px 11px;border-radius:8px;border:1px solid var(--sand);background:var(--white);color:var(--ink);cursor:pointer;transition:.2s ease;white-space:nowrap}
 .btn-data:hover{background:var(--sand)}
 .set-budget-btn{background:none;border:1px dashed var(--mist);border-radius:8px;padding:4px 10px;font-size:.78rem;cursor:pointer;color:var(--mist);font-family:'DM Sans',sans-serif;transition:.2s}
@@ -151,8 +158,8 @@
 /* MODAL */
 .modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.45);backdrop-filter:blur(4px);z-index:200;display:flex;align-items:center;justify-content:center;padding:24px;opacity:0;transition:.25s ease;pointer-events:none}
 .modal-backdrop.open{opacity:1;pointer-events:all}
-.modal-box{background:var(--white);border-radius:20px;width:100%;max-width:520px;box-shadow:0 24px 64px rgba(0,0,0,.18);transform:scale(.95);transition:.25s ease;max-height:90vh;overflow-y:auto}
-.modal-backdrop.open .modal-box{transform:scale(1)}
+.modal-box{background:var(--white);border-radius:20px;width:100%;max-width:520px;box-shadow:0 24px 64px rgba(0,0,0,.18);transform:scale(.85) translateY(20px);transition:transform .5s var(--ease-spring);max-height:90vh;overflow-y:auto}
+.modal-backdrop.open .modal-box{transform:scale(1) translateY(0)}
 .modal-header{display:flex;align-items:center;justify-content:space-between;padding:24px 24px 0}
 .modal-title{font-size:1.3rem;font-weight:700}
 .modal-close{background:none;border:none;cursor:pointer;font-size:1.3rem;color:var(--mist);line-height:1;transition:.2s ease}
@@ -196,6 +203,14 @@
 .cards-grid .card:nth-child(4){animation-delay:240ms}
 .cards-grid .card:nth-child(5){animation-delay:320ms}
 .cards-grid .card:nth-child(6){animation-delay:400ms}
+
+/* Pop-in for newly saved card */
+.card.just-added{animation:cardPopIn .9s var(--ease-spring) backwards}
+@keyframes cardPopIn{
+  0%{opacity:0;transform:scale(.4) rotate(-6deg);box-shadow:0 0 0 rgba(255,107,61,0)}
+  60%{opacity:1;transform:scale(1.06) rotate(2deg);box-shadow:0 24px 64px rgba(255,107,61,.45)}
+  100%{opacity:1;transform:scale(1) rotate(0);box-shadow:0 2px 12px rgba(0,0,0,.07)}
+}
 
 /* ATTACHMENTS / DOCS */
 .attach-link-row{display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap}
