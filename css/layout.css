@@ -157,28 +157,55 @@
   .places-grid{grid-template-columns:repeat(2,1fr)}
   .events-grid{grid-template-columns:1fr}
 }
+/* BOTTOM TAB BAR — hidden on desktop, shown on mobile */
+.bottom-nav{display:none}
+.more-sheet-backdrop{display:none}
+
 @media(max-width:767px){
   /* Larger base font: 16px prevents iOS auto-zoom on input focus */
   html{font-size:16px}
 
-  /* TWO-ROW TOP NAV: row 1 = logo + settings, row 2 = visible scrollable tab strip */
-  #nav{padding:0}
-  .nav-top{flex-wrap:wrap;height:auto;padding:0;gap:0;align-items:stretch}
-  .nav-logo{flex:1;display:flex;align-items:center;padding:8px 14px;justify-content:flex-start}
+  /* Hide top tab strip — bottom bar takes over */
+  .nav-tabs-wrap{display:none !important}
+
+  /* TOP NAV: just logo + settings, single tight row */
+  #nav{padding:0 12px}
+  .nav-top{height:60px;padding:0;gap:10px;flex-wrap:nowrap}
+  .nav-logo{flex:1;display:flex;align-items:center}
   .logo-mark{width:140px;height:48px}
   .logo-mark svg{width:140px;height:48px}
   .logo-text{left:37px;font-size:13px;letter-spacing:1.5px}
-  .nav-right{padding:8px 14px;align-items:center;gap:8px;flex-shrink:0}
+  .nav-right{align-items:center;gap:8px;flex-shrink:0}
   .settings-btn{width:40px;height:40px;font-size:1.1rem}
-  /* Tab strip on its own row, full width, scrolls horizontally */
-  .nav-tabs-wrap{display:block !important;order:3;width:100%;border-top:1px solid rgba(255,107,61,.18);background:rgba(0,0,0,.18);overflow-x:auto;-webkit-overflow-scrolling:touch}
-  .nav-tabs{padding:6px 10px;gap:2px;width:max-content}
-  .tab-btn{padding:10px 14px;font-size:.85rem;min-height:44px;flex-shrink:0}
 
-  #app{padding-top:118px}
+  #app{padding-top:60px}
 
-  /* FAB */
-  #fab{bottom:calc(20px + env(safe-area-inset-bottom,0px));right:16px;width:56px;height:56px}
+  /* BOTTOM NAV — fixed, always visible */
+  .bottom-nav{display:flex;position:fixed;bottom:0;left:0;right:0;z-index:90;background:#1f1814;border-top:1px solid rgba(255,107,61,.18);padding:6px 4px calc(6px + env(safe-area-inset-bottom,0px));box-shadow:0 -4px 24px rgba(0,0,0,.3);justify-content:space-around;align-items:stretch}
+  .bottom-tab{flex:1;background:none;border:none;color:#a89d92;font-family:'DM Sans',sans-serif;font-size:.7rem;font-weight:500;padding:6px 2px;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;border-radius:10px;transition:color .25s ease,background .25s ease;min-height:52px}
+  .bottom-tab svg{stroke:currentColor}
+  .bottom-tab.active{color:var(--rust);background:rgba(255,107,61,.1);text-shadow:0 0 6px rgba(255,107,61,.5)}
+  .bottom-tab.active svg{filter:drop-shadow(0 0 4px rgba(255,107,61,.5))}
+  .bottom-tab:active{transform:scale(.95)}
+
+  /* MORE SHEET */
+  .more-sheet-backdrop{display:flex;position:fixed;inset:0;background:rgba(0,0,0,.5);backdrop-filter:blur(4px);z-index:300;align-items:flex-end;opacity:0;pointer-events:none;transition:opacity .25s ease}
+  .more-sheet-backdrop.open{opacity:1;pointer-events:all}
+  .more-sheet{width:100%;background:#fef6ec;border-radius:20px 20px 0 0;padding:8px 16px calc(20px + env(safe-area-inset-bottom,0px));transform:translateY(100%);transition:transform .35s var(--ease-spring)}
+  .more-sheet-backdrop.open .more-sheet{transform:translateY(0)}
+  .more-sheet-handle{width:40px;height:4px;background:var(--sand);border-radius:2px;margin:8px auto 14px}
+  .more-sheet-item{display:flex;align-items:center;gap:14px;width:100%;padding:14px 12px;background:none;border:none;border-radius:12px;font-family:'DM Sans',sans-serif;font-size:1rem;color:var(--ink);cursor:pointer;text-align:left;transition:background .2s ease}
+  .more-sheet-item:active{background:var(--sand)}
+  .more-sheet-icon{font-size:1.4rem;width:32px;text-align:center}
+
+  /* Reserve room at the bottom of the page for the fixed bar */
+  body{padding-bottom:calc(64px + env(safe-area-inset-bottom,0px))}
+
+  /* FAB sits above bottom bar */
+  #fab{bottom:calc(76px + env(safe-area-inset-bottom,0px));right:16px;width:56px;height:56px}
+
+  /* Footer not hidden by bar */
+  .site-footer{padding:32px 16px calc(24px + env(safe-area-inset-bottom,0px));font-size:.78rem}
 
   /* Layout */
   .tab-content{padding:18px 14px env(safe-area-inset-bottom,16px)}
@@ -186,7 +213,9 @@
   /* Hide buttons that the FAB replaces on mobile */
   .mobile-hidden{display:none !important}
 
-  /* Trip cards: photo-forward on mobile (big cover, prominent text) */
+  /* Trip cards: full-width, photo-forward */
+  .cards-grid,.places-grid,.events-grid{grid-template-columns:1fr;gap:14px;margin:0}
+  .card{margin:0}
   .trip-card-header{height:160px}
   .trip-card-body{padding:18px}
   .trip-dest{font-size:1.55rem;margin-bottom:4px}
@@ -194,13 +223,17 @@
   .trip-dates{font-size:.88rem;margin-bottom:6px}
   .trip-days{font-size:.82rem;margin-bottom:12px}
 
-  /* Cards */
-  .cards-grid,.places-grid,.events-grid{grid-template-columns:1fr;gap:14px}
+  /* Smaller, tighter card actions (X / edit / delete) */
+  .card-actions{top:10px;right:10px;gap:6px}
+  .card-actions .icon-btn{width:34px;height:34px;font-size:.95rem}
+  .trip-deselect-btn{top:10px;left:10px;width:30px;height:30px;font-size:.85rem}
+
+  /* Budget cards */
   .budget-summary{grid-template-columns:repeat(2,1fr) !important;gap:10px}
   .budget-summary .stat-card{padding:14px 12px}
   .stat-value{font-size:1.2rem}
 
-  /* Touch targets — 44×44 min everywhere */
+  /* Touch targets — 44 min everywhere */
   .icon-btn{width:40px;height:40px;font-size:1.05rem}
   .filter-pill{padding:8px 14px;min-height:36px}
   .reorder-btn{width:32px;height:32px;font-size:.85rem}

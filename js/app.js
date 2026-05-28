@@ -85,6 +85,16 @@ document.addEventListener('click',e=>{
   }
 });
 
+// ===== MORE SHEET (bottom-nav overflow) =====
+function toggleMoreSheet(e){
+  if(e)e.stopPropagation();
+  document.getElementById('more-sheet-backdrop').classList.toggle('open');
+}
+function closeMoreSheet(e){
+  if(e&&e.target!==e.currentTarget&&!e.target.closest('.more-sheet-item'))return;
+  document.getElementById('more-sheet-backdrop').classList.remove('open');
+}
+
 function deSelectFromCard(){deselectTrip()}
 function tripXClick(id,btn){
   if(btn.dataset.confirming==='1'){deleteTrip(id);return;}
