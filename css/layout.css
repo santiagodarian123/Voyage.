@@ -157,51 +157,25 @@
   .places-grid{grid-template-columns:repeat(2,1fr)}
   .events-grid{grid-template-columns:1fr}
 }
-/* HAMBURGER + LEFT DRAWER (mobile only — hidden on desktop) */
-.hamburger-btn{display:none}
-.drawer-backdrop{display:none}
-
 @media(max-width:767px){
   /* Larger base font: 16px prevents iOS auto-zoom on input focus */
   html{font-size:16px}
 
-  /* Hide top-tab strip on mobile — drawer takes over */
-  .nav-tabs-wrap{display:none !important}
-
-  /* HAMBURGER BUTTON */
-  .hamburger-btn{display:flex;flex-direction:column;justify-content:center;gap:5px;width:40px;height:40px;background:rgba(255,255,255,.06);border:1px solid rgba(255,184,77,.25);border-radius:10px;cursor:pointer;padding:10px 8px;flex-shrink:0;transition:background .2s ease}
-  .hamburger-btn:active{background:rgba(255,184,77,.18)}
-  .hamburger-btn span{display:block;width:100%;height:2px;background:#ffd9c8;border-radius:2px;transition:transform .3s var(--ease-spring),opacity .2s ease}
-  .hamburger-btn.open span:nth-child(1){transform:translateY(7px) rotate(45deg)}
-  .hamburger-btn.open span:nth-child(2){opacity:0}
-  .hamburger-btn.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
-
-  /* LEFT DRAWER */
-  .drawer-backdrop{display:flex;position:fixed;inset:0;background:rgba(0,0,0,.5);backdrop-filter:blur(4px);z-index:300;opacity:0;pointer-events:none;transition:opacity .3s ease}
-  .drawer-backdrop.open{opacity:1;pointer-events:all}
-  .drawer{width:78%;max-width:300px;height:100%;background:#1f1814;color:#fef6ec;padding:16px 0 calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-100%);transition:transform .35s var(--ease-spring);display:flex;flex-direction:column;box-shadow:4px 0 32px rgba(0,0,0,.4)}
-  .drawer-backdrop.open .drawer{transform:translateX(0)}
-  .drawer-header{display:flex;align-items:center;justify-content:space-between;padding:8px 20px 20px;border-bottom:1px solid rgba(255,107,61,.2)}
-  .drawer-title{font-family:'Playfair Display',serif;font-style:italic;font-weight:700;font-size:1.2rem;color:var(--rust);letter-spacing:1.5px;text-shadow:0 0 12px rgba(255,107,61,.4)}
-  .drawer-close{background:none;border:none;color:#a89d92;font-size:1.3rem;cursor:pointer;width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;transition:background .2s ease}
-  .drawer-close:active{background:rgba(255,255,255,.1)}
-  .drawer-tabs{display:flex;flex-direction:column;padding:12px 12px;gap:2px;flex:1}
-  .drawer-item{display:flex;align-items:center;gap:14px;width:100%;padding:14px 14px;background:none;border:none;border-radius:12px;font-family:'DM Sans',sans-serif;font-size:1rem;color:#a89d92;cursor:pointer;text-align:left;transition:background .2s ease,color .2s ease}
-  .drawer-item:active{background:rgba(255,107,61,.08)}
-  .drawer-item.active{background:linear-gradient(135deg,rgba(255,107,61,.2),rgba(255,184,77,.15));color:#fef6ec;box-shadow:inset 0 0 0 1px rgba(255,107,61,.4)}
-  .drawer-icon{font-size:1.3rem;width:30px;text-align:center}
-
-  /* Top nav layout: hamburger + logo + settings, single row */
-  #nav{padding:0 12px}
-  .nav-top{height:60px;padding:0;gap:10px}
-  .nav-logo{flex:1;justify-content:center;display:flex}
+  /* TWO-ROW TOP NAV: row 1 = logo + settings, row 2 = visible scrollable tab strip */
+  #nav{padding:0}
+  .nav-top{flex-wrap:wrap;height:auto;padding:0;gap:0;align-items:stretch}
+  .nav-logo{flex:1;display:flex;align-items:center;padding:8px 14px;justify-content:flex-start}
   .logo-mark{width:140px;height:48px}
   .logo-mark svg{width:140px;height:48px}
   .logo-text{left:37px;font-size:13px;letter-spacing:1.5px}
-  .nav-right{gap:8px;flex-shrink:0}
+  .nav-right{padding:8px 14px;align-items:center;gap:8px;flex-shrink:0}
   .settings-btn{width:40px;height:40px;font-size:1.1rem}
+  /* Tab strip on its own row, full width, scrolls horizontally */
+  .nav-tabs-wrap{display:block !important;order:3;width:100%;border-top:1px solid rgba(255,107,61,.18);background:rgba(0,0,0,.18);overflow-x:auto;-webkit-overflow-scrolling:touch}
+  .nav-tabs{padding:6px 10px;gap:2px;width:max-content}
+  .tab-btn{padding:10px 14px;font-size:.85rem;min-height:44px;flex-shrink:0}
 
-  #app{padding-top:60px}
+  #app{padding-top:118px}
 
   /* FAB */
   #fab{bottom:calc(20px + env(safe-area-inset-bottom,0px));right:16px;width:56px;height:56px}

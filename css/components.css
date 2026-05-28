@@ -118,7 +118,10 @@
 
 /* EVENTS */
 .events-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:20px}
-.event-card{background:var(--white);border-radius:16px;padding:20px;box-shadow:0 2px 12px rgba(0,0,0,.07);position:relative;transition:.2s ease}
+.event-card{background:var(--white);border-radius:16px;padding:20px;box-shadow:0 2px 12px rgba(0,0,0,.07);position:relative;transition:.2s ease;overflow:hidden}
+.event-card.event-card-with-image{padding-top:140px}
+.event-cover{position:absolute;top:0;left:0;right:0;height:120px;background-size:cover;background-position:center;border-radius:16px 16px 0 0}
+.event-cover::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,transparent 0%,rgba(255,255,255,.4) 100%);pointer-events:none}
 .event-card:hover{box-shadow:0 8px 32px rgba(0,0,0,.13)}
 .event-card:hover .card-actions{opacity:1}
 .countdown-badge{position:absolute;top:16px;right:16px;border-radius:20px;padding:4px 10px;font-size:.75rem;font-weight:500;font-family:'DM Mono',monospace}

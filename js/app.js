@@ -85,17 +85,6 @@ document.addEventListener('click',e=>{
   }
 });
 
-// ===== MOBILE DRAWER =====
-function toggleDrawer(e){
-  if(e)e.stopPropagation();
-  document.getElementById('drawer-backdrop').classList.toggle('open');
-  document.getElementById('hamburger-btn').classList.toggle('open');
-}
-function closeDrawer(e){
-  if(e&&e.target!==e.currentTarget&&!e.target.closest('.drawer-item'))return;
-  document.getElementById('drawer-backdrop').classList.remove('open');
-  document.getElementById('hamburger-btn').classList.remove('open');
-}
 function deSelectFromCard(){deselectTrip()}
 function tripXClick(id,btn){
   if(btn.dataset.confirming==='1'){deleteTrip(id);return;}
@@ -365,6 +354,7 @@ function openExpenseModal(id=null,cat=null){
   document.getElementById('f-exp-date').value=e?.date||todayStr();
   document.getElementById('f-exp-cat').value=e?.category||cat||'Misc';
   document.getElementById('f-exp-notes').value=e?.notes||'';
+  document.getElementById('f-exp-where').value=e?.where||'';
   openModal('modal-expense');
 }
 function saveExpense(){
@@ -378,7 +368,8 @@ function saveExpense(){
     id:editingExpId||generateId(),tripId:trip.id,name,amount,
     category:document.getElementById('f-exp-cat').value,
     date:document.getElementById('f-exp-date').value||todayStr(),
-    notes:document.getElementById('f-exp-notes').value.trim()
+    notes:document.getElementById('f-exp-notes').value.trim(),
+    where:document.getElementById('f-exp-where').value.trim()
   };
   if(editingExpId){const i=expenses.findIndex(e=>e.id===editingExpId);expenses[i]=obj}
   else expenses.push(obj);
@@ -433,7 +424,7 @@ function renderBudget(){
     </div>
     ${totalBudget>0?`<div class="progress-bar" style="margin-bottom:12px"><div class="progress-fill" style="width:${pct}%;background:${barColor}"></div></div>`:''}
     ${catExp.map(e=>`<div class="expense-item">
-      <div><div class="expense-name">${esc(e.name)}</div><div class="expense-meta">${formatDate(e.date)}${e.notes?' · '+esc(e.notes):''}</div></div>
+      <div><div class="expense-name">${esc(e.name)}</div><div class="expense-meta">${formatDate(e.date)}${e.where?' · 📍 '+esc(e.where):''}${e.notes?' · '+esc(e.notes):''}</div></div>
       <div style="display:flex;align-items:center;gap:8px"><span class="expense-amount mono">${fmt(e.amount)}</span>
       <button class="icon-btn" style="opacity:1" onclick="confirmDelete('expense','${e.id}',event)" title="Delete">🗑</button></div>
     </div>`).join('')}`;
@@ -463,6 +454,12 @@ function openEventModal(id=null){
   document.getElementById('f-evt-cost').value=e?.ticketCost||'';
   document.getElementById('f-evt-code').value=e?.confirmationCode||'';
   document.getElementById('f-evt-notes').value=e?.notes||'';
+  // Cover image
+  selectedEventImage=e?.coverImage||null;
+  const evtPrev=document.getElementById('evt-img-preview');
+  const evtClr=document.getElementById('evt-img-clear');
+  if(selectedEventImage){evtPrev.innerHTML=`<img src="${selectedEventImage}" style="width:100%;height:100%;object-fit:cover;border-radius:8px">`;evtClr.style.display='';}
+  else{evtPrev.innerHTML='🖼';evtClr.style.display='none';}
   evtAttachments=e?.attachments?JSON.parse(JSON.stringify(e.attachments)):[];
   document.getElementById('f-evt-link-url').value='';
   document.getElementById('f-evt-link-label').value='';
@@ -470,6 +467,22 @@ function openEventModal(id=null){
   populateTripSelects();
   if(e?.tripId)document.getElementById('f-evt-trip').value=e.tripId;
   openModal('modal-event');
+}
+let selectedEventImage=null;
+function handleEventImage(input){
+  const file=input.files[0];if(!file)return;
+  const reader=new FileReader();
+  reader.onload=ev=>{
+    selectedEventImage=ev.target.result;
+    document.getElementById('evt-img-preview').innerHTML=`<img src="${selectedEventImage}" style="width:100%;height:100%;object-fit:cover;border-radius:8px">`;
+    document.getElementById('evt-img-clear').style.display='';
+  };
+  reader.readAsDataURL(file);
+}
+function clearEventImage(){
+  selectedEventImage=null;
+  document.getElementById('evt-img-preview').innerHTML='🖼';
+  document.getElementById('evt-img-clear').style.display='none';
 }
 function saveEvent(){
   const name=document.getElementById('f-evt-name').value.trim();
@@ -487,12 +500,13 @@ function saveEvent(){
     confirmationCode:document.getElementById('f-evt-code').value.trim(),
     tripId:document.getElementById('f-evt-trip').value,
     notes:document.getElementById('f-evt-notes').value.trim(),
+    coverImage:selectedEventImage||null,
     attachments:evtAttachments
   };
   if(editingEventId){const i=events.findIndex(e=>e.id===editingEventId);events[i]=obj}
   else events.push(obj);
   editingEventId=null;
-  saveData(KEYS.events,events);
+  try{saveData(KEYS.events,events)}catch(e){showToast('Storage full — try removing the cover image','error');return}
   const expenses=loadData(KEYS.expenses);
   const existing=expenses.findIndex(e=>e.eventId===eventId);
   const targetTrip=obj.tripId&&obj.tripId.trim()!==''?obj.tripId:(getActiveTrip()?.id||null);
@@ -539,7 +553,8 @@ function renderEvents(){
     else if(isPast)badge=`<div class="countdown-badge" style="background:var(--sand);color:var(--mist)">Completed</div>`;
     else badge=`<div class="countdown-badge" style="background:var(--rust);color:var(--white)">In ${du} day${du===1?'':'s'}</div>`;
     const cc=evtCatColors[e.category]||'mist';
-    return`<div class="event-card ${isPast?'event-past':''}">
+    return`<div class="event-card ${isPast?'event-past':''}${e.coverImage?' event-card-with-image':''}">
+      ${e.coverImage?`<div class="event-cover" style="background-image:url('${e.coverImage}')"></div>`:''}
       <div class="card-actions" style="opacity:1;top:52px">
         <button class="icon-btn" onclick="openEventModal('${e.id}')" title="Edit">✏️</button>
         <button class="icon-btn" onclick="confirmDelete('event','${e.id}',event)" title="Delete">🗑</button>
