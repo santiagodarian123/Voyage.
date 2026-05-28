@@ -13,9 +13,9 @@
 <link rel="icon" href="assets/icons/favicon.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/base.css?v=2">
-<link rel="stylesheet" href="css/layout.css?v=2">
-<link rel="stylesheet" href="css/components.css?v=2">
+<link rel="stylesheet" href="css/base.css?v=3">
+<link rel="stylesheet" href="css/layout.css?v=3">
+<link rel="stylesheet" href="css/components.css?v=3">
 </head>
 <body>
 
@@ -87,9 +87,6 @@
 <!-- NAV -->
 <nav id="nav">
   <div class="nav-top">
-    <button class="hamburger-btn" id="hamburger-btn" onclick="toggleDrawer(event)" aria-label="Open menu">
-      <span></span><span></span><span></span>
-    </button>
     <div class="nav-logo">
       <div class="logo-mark" aria-label="Voyage">
         <svg width="200" height="68" viewBox="0 0 240 80" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
@@ -275,7 +272,7 @@
           <label class="form-label">Total Budget</label>
           <div class="input-prefix-wrap">
             <span class="input-prefix currency-prefix">$</span>
-            <input class="form-input" type="number" id="f-trip-budget" placeholder="2500" min="0">
+            <input class="form-input" type="number" id="f-trip-budget" placeholder="" min="0">
           </div>
         </div>
       </div>
@@ -394,6 +391,10 @@
         </select>
       </div>
       <div class="form-group">
+        <label class="form-label">Where</label>
+        <input class="form-input" id="f-exp-where" placeholder="Restaurant, store, or address">
+      </div>
+      <div class="form-group">
         <label class="form-label">Notes</label>
         <input class="form-input" id="f-exp-notes" placeholder="Optional notes">
       </div>
@@ -461,6 +462,17 @@
       <div class="form-group">
         <label class="form-label">Notes</label>
         <textarea class="form-textarea" id="f-evt-notes" placeholder="Notes…"></textarea>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Cover Image</label>
+        <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+          <label style="display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer">
+            <div id="evt-img-preview" style="width:96px;height:64px;border-radius:10px;border:2px dashed var(--sand);display:flex;align-items:center;justify-content:center;font-size:1.4rem;color:var(--mist);overflow:hidden;background:var(--paper)">🖼</div>
+            <span style="font-size:.72rem;color:var(--mist)">Upload</span>
+            <input type="file" accept="image/*" style="display:none" onchange="handleEventImage(this)">
+          </label>
+          <button type="button" id="evt-img-clear" style="display:none;font-size:.78rem;color:var(--danger);background:none;border:none;cursor:pointer;padding:0" onclick="clearEventImage()">✕ Remove</button>
+        </div>
       </div>
       <div class="form-group">
         <label class="form-label">Attachments</label>
@@ -550,39 +562,6 @@
   </div>
 </div>
 
-<!-- LEFT DRAWER (mobile nav) -->
-<div class="drawer-backdrop" id="drawer-backdrop" onclick="closeDrawer(event)">
-  <aside class="drawer" onclick="event.stopPropagation()">
-    <div class="drawer-header">
-      <div class="drawer-title">Voyage</div>
-      <button class="drawer-close" onclick="closeDrawer()" aria-label="Close menu">✕</button>
-    </div>
-    <nav class="drawer-tabs">
-      <button class="drawer-item tab-btn active" data-tab="trips" onclick="closeDrawer()">
-        <span class="drawer-icon">🧳</span><span>My Trips</span>
-      </button>
-      <button class="drawer-item tab-btn" data-tab="itinerary" onclick="closeDrawer()">
-        <span class="drawer-icon">📍</span><span>Itinerary</span>
-      </button>
-      <button class="drawer-item tab-btn" data-tab="budget" onclick="closeDrawer()">
-        <span class="drawer-icon">💳</span><span>Budget</span>
-      </button>
-      <button class="drawer-item tab-btn" data-tab="events" onclick="closeDrawer()">
-        <span class="drawer-icon">🎟</span><span>Events &amp; Sports</span>
-      </button>
-      <button class="drawer-item tab-btn" data-tab="places" onclick="closeDrawer()">
-        <span class="drawer-icon">📌</span><span>Places</span>
-      </button>
-      <button class="drawer-item tab-btn" data-tab="calendar" onclick="closeDrawer()">
-        <span class="drawer-icon">📅</span><span>Calendar</span>
-      </button>
-      <button class="drawer-item tab-btn" data-tab="docs" onclick="closeDrawer()">
-        <span class="drawer-icon">📁</span><span>Documents</span>
-      </button>
-    </nav>
-  </aside>
-</div>
-
 <!-- FOOTER -->
 <footer class="site-footer">
   <span>Built by <a href="https://www.linkedin.com/in/santiagodarian" target="_blank" rel="noopener">Darian Pulgarin</a></span>
@@ -590,7 +569,7 @@
   <span>© 2026 Voyage</span>
 </footer>
 
-<script src="js/storage.js?v=2"></script>
-<script src="js/app.js?v=2"></script>
+<script src="js/storage.js?v=3"></script>
+<script src="js/app.js?v=3"></script>
 </body>
 </html>
