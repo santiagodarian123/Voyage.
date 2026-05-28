@@ -81,7 +81,8 @@
 .site-footer{position:relative;text-align:center;padding:24px 16px 32px;font-size:.75rem;color:var(--mist);font-family:'DM Sans',sans-serif;z-index:1}
 .site-footer a{color:var(--teal);text-decoration:none;font-weight:600}
 .site-footer a:hover{text-decoration:underline}
-.footer-sep{margin:0 8px;opacity:.5}
+.footer-line{display:inline-block}
+.footer-line+.footer-line{margin-left:8px}
 
 /* CONTENT */
 #app{padding-top:68px}
@@ -201,14 +202,18 @@
   /* Reserve room at the bottom of the page for the fixed bar */
   body{padding-bottom:calc(64px + env(safe-area-inset-bottom,0px))}
 
-  /* FAB sits above bottom bar */
-  #fab{bottom:calc(76px + env(safe-area-inset-bottom,0px));right:16px;width:56px;height:56px}
+  /* FAB sits well above bottom bar */
+  #fab{bottom:calc(86px + env(safe-area-inset-bottom,0px));right:16px;width:56px;height:56px}
 
-  /* Footer not hidden by bar */
-  .site-footer{padding:32px 16px calc(24px + env(safe-area-inset-bottom,0px));font-size:.78rem}
+  /* Dunes shift up so they're visible above the bottom bar */
+  .dunes{bottom:calc(64px + env(safe-area-inset-bottom,0px));height:30vh;min-height:200px;max-height:320px}
+
+  /* Footer: right-aligned and stacked on mobile */
+  .site-footer{display:flex;flex-direction:column;align-items:flex-end;text-align:right;padding:24px 16px calc(20px + env(safe-area-inset-bottom,0px));font-size:.78rem;line-height:1.4}
+  .footer-line+.footer-line{margin-left:0;margin-top:2px}
 
   /* Layout */
-  .tab-content{padding:18px 14px env(safe-area-inset-bottom,16px)}
+  .tab-content{padding:18px 8px env(safe-area-inset-bottom,16px)}
 
   /* Hide buttons that the FAB replaces on mobile */
   .mobile-hidden{display:none !important}
@@ -297,9 +302,6 @@
   /* Itinerary timeline */
   .timeline{padding-left:36px}
   .stop-dot{left:-29px}
-
-  /* Footer extra room above home indicator */
-  .site-footer{padding:32px 16px calc(32px + env(safe-area-inset-bottom,0px));font-size:.78rem}
 
   /* Active trip pill — narrower */
   .active-trip-pill{max-width:120px;font-size:.75rem}
