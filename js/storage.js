@@ -6,7 +6,17 @@ function saveData(k,arr){localStorage.setItem(k,JSON.stringify(arr))}
 function loadData(k){try{return JSON.parse(localStorage.getItem(k))||[]}catch{return[]}}
 function generateId(){return Date.now().toString(36)+Math.random().toString(36).slice(2)}
 function getActiveTrip(){const id=localStorage.getItem(KEYS.active);if(!id)return null;return loadData(KEYS.trips).find(t=>t.id===id)||null}
-function setActiveTrip(id){localStorage.setItem(KEYS.active,id);updateNavTrip();renderItinerary();renderBudget();if(activeTab==='docs')renderDocs()}
+function setActiveTrip(id){
+  localStorage.setItem(KEYS.active,id);
+  // Switch the active currency to whatever this trip uses (if it has one)
+  const trip=loadData(KEYS.trips).find(t=>t.id===id);
+  if(trip?.currency&&trip.currency!==activeCurrency){
+    activeCurrency=trip.currency;
+    localStorage.setItem('voyage_currency',trip.currency);
+    updateCurrencyPrefixes();
+  }
+  updateNavTrip();renderItinerary();renderBudget();if(activeTab==='docs')renderDocs();
+}
 
 // ===== CURRENCY =====
 const CURRENCIES={

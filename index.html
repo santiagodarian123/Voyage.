@@ -120,7 +120,7 @@
         <h2 class="section-title">My Trips</h2>
         <p style="font-family:'Playfair Display',serif;font-style:italic;font-size:.9rem;color:var(--rust);margin-top:2px;opacity:.85">The travel planner that actually respects your wallet.</p>
       </div>
-      <button class="btn btn-primary" onclick="openTripModal()">+ New Trip</button>
+      <button class="btn btn-primary mobile-hidden" onclick="openTripModal()">+ New Trip</button>
     </div>
     <div id="trips-list"></div>
   </div>
@@ -139,7 +139,7 @@
   <div class="tab-content" id="tab-events">
     <div class="section-header">
       <h2 class="section-title">Events & Sports</h2>
-      <button class="btn btn-primary" onclick="openEventModal()">+ Add Event</button>
+      <button class="btn btn-primary mobile-hidden" onclick="openEventModal()">+ Add Event</button>
     </div>
     <div id="events-list"></div>
   </div>
@@ -148,7 +148,7 @@
   <div class="tab-content" id="tab-places">
     <div class="section-header">
       <h2 class="section-title">Places</h2>
-      <button class="btn btn-primary" onclick="openPlaceModal()">+ Add Place</button>
+      <button class="btn btn-primary mobile-hidden" onclick="openPlaceModal()">+ Add Place</button>
     </div>
     <div class="places-filters">
       <button class="filter-pill active" data-cat-filter="All" onclick="setCatFilter(this)">All</button>
@@ -269,11 +269,17 @@
           <input class="form-input" type="date" id="f-trip-end">
         </div>
       </div>
-      <div class="form-group">
-        <label class="form-label">Total Budget</label>
-        <div class="input-prefix-wrap">
-          <span class="input-prefix currency-prefix">$</span>
-          <input class="form-input" type="number" id="f-trip-budget" placeholder="2500" min="0">
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Currency</label>
+          <select class="form-select" id="f-trip-currency"></select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Total Budget</label>
+          <div class="input-prefix-wrap">
+            <span class="input-prefix currency-prefix">$</span>
+            <input class="form-input" type="number" id="f-trip-budget" placeholder="2500" min="0">
+          </div>
         </div>
       </div>
       <div class="form-group">
@@ -544,6 +550,49 @@
       <button class="btn btn-ghost" onclick="closeModal('modal-place')">Cancel</button>
       <button class="btn btn-primary" onclick="savePlace()">Save Place</button>
     </div>
+  </div>
+</div>
+
+<!-- BOTTOM TAB BAR (mobile only) -->
+<nav class="bottom-nav" aria-label="Primary">
+  <button class="bottom-tab tab-btn active" data-tab="trips" aria-label="Trips">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a4 4 0 0 1 8 0v2"/></svg>
+    <span>Trips</span>
+  </button>
+  <button class="bottom-tab tab-btn" data-tab="itinerary" aria-label="Itinerary">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="10" r="3"/><path d="M12 2a8 8 0 0 0-8 8c0 5.5 8 12 8 12s8-6.5 8-12a8 8 0 0 0-8-8z"/></svg>
+    <span>Plan</span>
+  </button>
+  <button class="bottom-tab tab-btn" data-tab="budget" aria-label="Budget">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 10h18"/><circle cx="12" cy="14.5" r="1.5"/></svg>
+    <span>Budget</span>
+  </button>
+  <button class="bottom-tab tab-btn" data-tab="calendar" aria-label="Calendar">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M8 3v4M16 3v4M3 11h18"/></svg>
+    <span>Calendar</span>
+  </button>
+  <button class="bottom-tab" id="bottom-more-btn" onclick="toggleMoreSheet(event)" aria-label="More">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="5" cy="12" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="19" cy="12" r="1.5"/></svg>
+    <span>More</span>
+  </button>
+</nav>
+
+<!-- MORE SHEET (mobile only) -->
+<div class="more-sheet-backdrop" id="more-sheet-backdrop" onclick="closeMoreSheet(event)">
+  <div class="more-sheet">
+    <div class="more-sheet-handle"></div>
+    <button class="more-sheet-item tab-btn" data-tab="events" onclick="closeMoreSheet()">
+      <span class="more-sheet-icon">🎟</span>
+      <span>Events &amp; Sports</span>
+    </button>
+    <button class="more-sheet-item tab-btn" data-tab="places" onclick="closeMoreSheet()">
+      <span class="more-sheet-icon">📍</span>
+      <span>Places</span>
+    </button>
+    <button class="more-sheet-item tab-btn" data-tab="docs" onclick="closeMoreSheet()">
+      <span class="more-sheet-icon">📁</span>
+      <span>Documents &amp; Links</span>
+    </button>
   </div>
 </div>
 

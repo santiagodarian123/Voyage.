@@ -107,8 +107,7 @@
 .stat-value.rust{color:var(--rust)}
 .stat-value.success{color:var(--success)}
 .stat-value.danger{color:var(--danger)}
-.budget-cat-section{background:var(--white);border-radius:16px;padding:20px;margin-bottom:16px;box-shadow:0 2px 8px rgba(0,0,0,.06)}
-.budget-cat-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.budget-cat-section{background:var(--white);border-radius:16px;padding:20px;margin-bottom:16px;box-shadow:0 2px 8px rgba(0,0,0,.06)}.budget-cat-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
 .budget-cat-title{display:flex;align-items:center;gap:8px;font-weight:600;font-size:.95rem}
 .budget-meta{display:flex;align-items:center;gap:12px;font-size:.82rem;color:var(--mist);font-family:'DM Mono',monospace}
 .set-budget-inline{display:flex;align-items:center;gap:8px;margin-bottom:10px}

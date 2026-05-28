@@ -157,9 +157,43 @@
   .places-grid{grid-template-columns:repeat(2,1fr)}
   .events-grid{grid-template-columns:1fr}
 }
+/* BOTTOM TAB BAR (mobile only — hidden on desktop) */
+.bottom-nav{display:none}
+.more-sheet-backdrop{display:none}
+
 @media(max-width:767px){
   /* Larger base font: 16px prevents iOS auto-zoom on input focus */
   html{font-size:16px}
+
+  /* Hide top-tab strip on mobile — bottom bar takes over */
+  .nav-tabs-wrap{display:none}
+
+  /* Bottom tab bar */
+  .bottom-nav{display:flex;position:fixed;bottom:0;left:0;right:0;z-index:90;background:#1f1814;border-top:1px solid rgba(255,107,61,.18);padding:6px 4px calc(6px + env(safe-area-inset-bottom,0px));box-shadow:0 -4px 24px rgba(0,0,0,.18);justify-content:space-around;align-items:stretch}
+  .bottom-tab{flex:1;background:none;border:none;color:#a89d92;font-family:'DM Sans',sans-serif;font-size:.65rem;font-weight:500;padding:6px 2px;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;border-radius:10px;transition:color .25s ease,background .25s ease}
+  .bottom-tab svg{stroke:currentColor}
+  .bottom-tab.active{color:var(--rust);background:rgba(255,107,61,.1);text-shadow:0 0 6px rgba(255,107,61,.5)}
+  .bottom-tab.active svg{filter:drop-shadow(0 0 4px rgba(255,107,61,.5))}
+  .bottom-tab:active{transform:scale(.95)}
+
+  /* MORE SHEET */
+  .more-sheet-backdrop{display:flex;position:fixed;inset:0;background:rgba(0,0,0,.45);backdrop-filter:blur(4px);z-index:300;align-items:flex-end;opacity:0;pointer-events:none;transition:opacity .25s ease}
+  .more-sheet-backdrop.open{opacity:1;pointer-events:all}
+  .more-sheet{width:100%;background:#fef6ec;border-radius:20px 20px 0 0;padding:8px 16px calc(20px + env(safe-area-inset-bottom,0px));transform:translateY(100%);transition:transform .35s var(--ease-spring)}
+  .more-sheet-backdrop.open .more-sheet{transform:translateY(0)}
+  .more-sheet-handle{width:40px;height:4px;background:var(--sand);border-radius:2px;margin:8px auto 14px}
+  .more-sheet-item{display:flex;align-items:center;gap:14px;width:100%;padding:14px 12px;background:none;border:none;border-radius:12px;font-family:'DM Sans',sans-serif;font-size:1rem;color:var(--ink);cursor:pointer;text-align:left;transition:background .2s ease}
+  .more-sheet-item:hover,.more-sheet-item:active{background:var(--sand)}
+  .more-sheet-icon{font-size:1.4rem;width:32px;text-align:center}
+
+  /* Reserve space at the bottom of the page so content isn't hidden under the bar */
+  body{padding-bottom:calc(64px + env(safe-area-inset-bottom,0px))}
+
+  /* FAB sits above bottom bar */
+  #fab{bottom:calc(76px + env(safe-area-inset-bottom,0px))}
+
+  /* Nav at top: now just logo + settings (no tabs) */
+  #app{padding-top:64px}
 
   /* Nav */
   #nav{padding:0 12px}
@@ -174,8 +208,18 @@
   .settings-btn{width:40px;height:40px;font-size:1.1rem}
 
   /* Layout */
-  #app{padding-top:108px}
   .tab-content{padding:18px 14px env(safe-area-inset-bottom,16px)}
+
+  /* Hide buttons that the FAB replaces on mobile */
+  .mobile-hidden{display:none !important}
+
+  /* Trip cards: photo-forward on mobile (big cover, prominent text) */
+  .trip-card-header{height:160px}
+  .trip-card-body{padding:18px}
+  .trip-dest{font-size:1.55rem;margin-bottom:4px}
+  .trip-country{font-size:.92rem;margin-bottom:10px}
+  .trip-dates{font-size:.88rem;margin-bottom:6px}
+  .trip-days{font-size:.82rem;margin-bottom:12px}
 
   /* Cards */
   .cards-grid,.places-grid,.events-grid{grid-template-columns:1fr;gap:14px}
@@ -215,8 +259,8 @@
   .timeline{padding-left:36px}
   .stop-dot{left:-29px}
 
-  /* Footer extra room above home indicator */
-  .site-footer{padding-bottom:calc(32px + env(safe-area-inset-bottom,0px))}
+  /* Footer extra room above home indicator + bottom tab bar */
+  .site-footer{padding:32px 16px calc(96px + env(safe-area-inset-bottom,0px));font-size:.78rem}
 
   /* Active trip pill — narrower */
   .active-trip-pill{max-width:120px;font-size:.75rem}

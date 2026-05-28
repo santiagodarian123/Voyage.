@@ -20,14 +20,17 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'){document.querySelec
 let activeTab='trips';
 document.querySelectorAll('.tab-btn').forEach(btn=>{
   btn.addEventListener('click',()=>{
-    activeTab=btn.dataset.tab;
-    document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
-    btn.classList.add('active');
-    document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));
-    document.getElementById('tab-'+activeTab).classList.add('active');
-    renderTab(activeTab);
+    if(!btn.dataset.tab)return;
+    setActiveTab(btn.dataset.tab);
   });
 });
+function setActiveTab(tab){
+  activeTab=tab;
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.toggle('active',b.dataset.tab===tab));
+  document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));
+  document.getElementById('tab-'+tab).classList.add('active');
+  renderTab(tab);
+}
 function renderTab(tab){
   if(tab==='trips')renderTrips();
   else if(tab==='itinerary')renderItinerary();
@@ -57,10 +60,6 @@ function updateNavTrip(){
     <button class="settings-btn" onclick="toggleSettings(event)" title="Settings" aria-label="Settings">⚙</button>
     <div class="settings-menu" id="settings-menu">
       <div class="settings-section">
-        <div class="settings-label">Currency</div>
-        <select class="currency-select" onchange="setCurrency(this.value)">${Object.entries(CURRENCIES).map(([k])=>`<option value="${k}" ${k===activeCurrency?'selected':''}>${k}</option>`).join('')}</select>
-      </div>
-      <div class="settings-section">
         <div class="settings-label">Backup</div>
         <button class="settings-action" onclick="exportData()">⬇ Export data</button>
         <button class="settings-action" onclick="document.getElementById('import-file-input').click()">⬆ Import data</button>
@@ -85,6 +84,16 @@ document.addEventListener('click',e=>{
     menu.classList.remove('open');
   }
 });
+
+// ===== MORE SHEET (bottom tab bar overflow) =====
+function toggleMoreSheet(e){
+  if(e)e.stopPropagation();
+  document.getElementById('more-sheet-backdrop').classList.toggle('open');
+}
+function closeMoreSheet(e){
+  if(e&&e.target!==e.currentTarget&&!e.target.closest('.more-sheet-item'))return;
+  document.getElementById('more-sheet-backdrop').classList.remove('open');
+}
 function deSelectFromCard(){deselectTrip()}
 function tripXClick(id,btn){
   if(btn.dataset.confirming==='1'){deleteTrip(id);return;}
@@ -133,6 +142,10 @@ function openTripModal(id=null){
   document.getElementById('f-trip-start').value=t?.startDate||'';
   document.getElementById('f-trip-end').value=t?.endDate||'';
   document.getElementById('f-trip-budget').value=t?.totalBudget||'';
+  // Currency selector — populate options, preselect trip's currency or current default
+  const curSel=document.getElementById('f-trip-currency');
+  const tripCur=t?.currency||activeCurrency;
+  curSel.innerHTML=Object.entries(CURRENCIES).map(([k,v])=>`<option value="${k}" ${k===tripCur?'selected':''}>${k} ${v.symbol}</option>`).join('');
   document.getElementById('f-trip-notes').value=t?.notes||'';
   selectedColor=t?.coverColor??0;
   selectedCoverImage=t?.coverImage||null;
@@ -154,12 +167,14 @@ function saveTrip(){
   if(!end){shake('f-trip-end');ok=false}
   if(!ok)return;
   const trips=loadData(KEYS.trips);
+  const tripCurrency=document.getElementById('f-trip-currency').value||'USD';
   const obj={
     id:editingTripId||generateId(),name,destination:dest,
     country:document.getElementById('f-trip-country').value.trim(),
     category:document.getElementById('f-trip-cat').value,
     startDate:start,endDate:end,
     totalBudget:parseFloat(document.getElementById('f-trip-budget').value)||0,
+    currency:tripCurrency,
     coverColor:selectedColor,
     coverImage:selectedCoverImage||null,
     notes:document.getElementById('f-trip-notes').value.trim()
@@ -169,6 +184,8 @@ function saveTrip(){
   const savedId=obj.id;
   editingTripId=null;
   try{saveData(KEYS.trips,trips)}catch(e){showToast('Storage full — try removing the cover image','error');return}
+  // Apply this trip's currency globally so the Budget/Expenses tabs show in the right symbol
+  if(tripCurrency!==activeCurrency){activeCurrency=tripCurrency;localStorage.setItem('voyage_currency',tripCurrency);updateCurrencyPrefixes();}
   justSavedTripId=savedId;
   closeModal('modal-trip');renderTrips();showToast('Trip saved!','success');
   setTimeout(()=>{justSavedTripId=null},1000);
@@ -218,12 +235,8 @@ function renderTrips(){
 function selectTrip(id,e){
   if(e.target.closest('.card-actions,.del-confirm'))return;
   setActiveTrip(id);
-  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
-  document.querySelector('[data-tab="itinerary"]').classList.add('active');
-  activeTab='itinerary';
-  document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));
-  document.getElementById('tab-itinerary').classList.add('active');
-  renderItinerary();showToast('Trip selected!','info');
+  setActiveTab('itinerary');
+  showToast('Trip selected!','info');
 }
 
 // ===== ITINERARY =====
@@ -295,7 +308,7 @@ function renderItinerary(){
   const el=document.getElementById('itinerary-content');
   if(!trip){el.innerHTML=`<div class="require-trip"><h3>No trip selected</h3><p>Select a trip from the Trips tab to view its itinerary.</p></div>`;return}
   const stops=loadData(KEYS.stops).filter(s=>s.tripId===trip.id);
-  el.innerHTML=`<div class="section-header"><h2 class="section-title">${esc(trip.name)} — Itinerary</h2><button class="btn btn-primary" onclick="openStopModal()">+ Add Stop</button></div>`;
+  el.innerHTML=`<div class="section-header"><h2 class="section-title">${esc(trip.name)} — Itinerary</h2><button class="btn btn-primary mobile-hidden" onclick="openStopModal()">+ Add Stop</button></div>`;
   if(!stops.length){
     el.innerHTML+=`<div class="empty-state"><svg width="80" height="80" viewBox="0 0 80 80" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="40" cy="32" r="14"/><path d="M40 46v20M40 46l-12 8M40 46l12 8"/><circle cx="40" cy="32" r="4" fill="currentColor"/></svg><h3>No stops yet</h3><p>Add your first stop to build your itinerary.</p></div>`;
     return;
@@ -396,7 +409,7 @@ function renderBudget(){
   const remBg=totalBudget>0?(remNeg?'background:var(--danger);':'background:var(--success);'):'';
   const spentTxt=totalBudget>0?'color:#fff':'';
   const remTxt=totalBudget>0?'color:#fff':'';
-  el.innerHTML=`<div class="section-header"><h2 class="section-title">${esc(trip.name)} — Budget</h2><button class="btn btn-primary" onclick="openExpenseModal()">+ Add Expense</button></div>
+  el.innerHTML=`<div class="section-header"><h2 class="section-title">${esc(trip.name)} — Budget</h2><button class="btn btn-primary mobile-hidden" onclick="openExpenseModal()">+ Add Expense</button></div>
   <div class="budget-summary" style="grid-template-columns:repeat(5,1fr)">
     <div class="stat-card" style="background:var(--gold);border-radius:16px"><div class="stat-label" style="color:#fff">Total Budget</div><div class="stat-value mono" style="color:#fff">${fmt(totalBudget)}</div></div>
     <div class="stat-card"><div class="stat-label">Trip Duration</div><div class="stat-value teal mono">${tripDays} day${tripDays===1?'':'s'}</div></div>
