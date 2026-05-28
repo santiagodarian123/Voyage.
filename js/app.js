@@ -908,17 +908,6 @@ function fileIcon(type){
   return'📎';
 }
 
-// ===== MOBILE WARNING =====
-(function(){
-  if(localStorage.getItem('voyage_mobile_seen'))return;
-  if(!/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent))return;
-  document.getElementById('mobile-warning-bg').style.display='flex';
-})();
-function closeMobileWarning(){
-  localStorage.setItem('voyage_mobile_seen','1');
-  document.getElementById('mobile-warning-bg').style.display='none';
-}
-
 // ===== iOS INSTALL HINT =====
 function dismissIosHint(){
   document.getElementById('ios-install-hint').classList.remove('show');

@@ -158,14 +158,76 @@
   .events-grid{grid-template-columns:1fr}
 }
 @media(max-width:767px){
-  .nav-top{flex-wrap:wrap;height:auto;padding:10px 0;gap:0}
-  .nav-tabs-wrap{width:100%;padding-bottom:6px}
-  .cards-grid,.places-grid,.events-grid{grid-template-columns:1fr}
-  .budget-summary{grid-template-columns:1fr}
-  .tab-content{padding:20px 16px}
+  /* Larger base font: 16px prevents iOS auto-zoom on input focus */
+  html{font-size:16px}
+
+  /* Nav */
+  #nav{padding:0 12px}
+  .nav-top{flex-wrap:wrap;height:auto;padding:8px 0;gap:6px}
+  .nav-logo{flex:1}
+  .logo-mark{width:140px;height:48px}
+  .logo-mark svg{width:140px;height:48px}
+  .logo-text{left:37px;font-size:13px;letter-spacing:1.5px}
+  .nav-tabs-wrap{order:3;width:100%;padding-bottom:4px}
+  .tab-btn{padding:10px 14px;font-size:.88rem;min-height:44px}
+  .nav-right{gap:8px}
+  .settings-btn{width:40px;height:40px;font-size:1.1rem}
+
+  /* Layout */
+  #app{padding-top:108px}
+  .tab-content{padding:18px 14px env(safe-area-inset-bottom,16px)}
+
+  /* Cards */
+  .cards-grid,.places-grid,.events-grid{grid-template-columns:1fr;gap:14px}
+  .budget-summary{grid-template-columns:repeat(2,1fr) !important;gap:10px}
+  .budget-summary .stat-card{padding:14px 12px}
+  .stat-value{font-size:1.2rem}
+
+  /* Touch targets — 44×44 min everywhere */
+  .icon-btn{width:40px;height:40px;font-size:1.05rem}
+  .filter-pill{padding:8px 14px;min-height:36px}
+  .reorder-btn{width:32px;height:32px;font-size:.85rem}
+
+  /* Modals — bottom sheet pattern */
   .modal-backdrop{padding:0;align-items:flex-end}
-  .modal-box{border-radius:20px 20px 0 0;max-height:95vh}
-  #day-panel{width:100%;top:0}
-  #fab{bottom:16px;right:16px}
-  .form-row{grid-template-columns:1fr}
+  .modal-box{border-radius:20px 20px 0 0;max-height:92vh;max-width:none}
+  .modal-header{padding:18px 18px 0}
+  .modal-body{padding:16px 18px;padding-bottom:calc(16px + env(safe-area-inset-bottom,0px))}
+  .modal-footer{padding:0 18px 18px;padding-bottom:calc(18px + env(safe-area-inset-bottom,0px))}
+  .form-row{grid-template-columns:1fr;gap:0}
+  .form-input,.form-select,.form-textarea{font-size:16px;padding:12px 14px}
+
+  /* Day panel becomes full screen */
+  #day-panel{width:100%;top:0;padding:18px;padding-bottom:calc(18px + env(safe-area-inset-bottom,0px))}
+
+  /* FAB */
+  #fab{bottom:calc(20px + env(safe-area-inset-bottom,0px));right:16px;width:56px;height:56px}
+
+  /* Calendar — let it scroll horizontally if cramped */
+  .cal-grid-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+  .cal-dow-header,.cal-grid{min-width:520px}
+  .cal-cell{min-height:72px;padding:6px}
+  .day-num{font-size:.78rem;width:20px;height:20px}
+  .cal-trip-band{font-size:.55rem}
+  .cal-event-row{font-size:.6rem}
+
+  /* Itinerary timeline */
+  .timeline{padding-left:36px}
+  .stop-dot{left:-29px}
+
+  /* Footer extra room above home indicator */
+  .site-footer{padding-bottom:calc(32px + env(safe-area-inset-bottom,0px))}
+
+  /* Active trip pill — narrower */
+  .active-trip-pill{max-width:120px;font-size:.75rem}
+}
+
+/* Very small phones (iPhone SE / older) */
+@media(max-width:380px){
+  .nav-tabs{gap:0}
+  .tab-btn{padding:10px 10px;font-size:.82rem}
+  .budget-summary{grid-template-columns:1fr !important}
+  .logo-mark{width:120px;height:42px}
+  .logo-mark svg{width:120px;height:42px}
+  .logo-text{left:32px;font-size:12px}
 }
