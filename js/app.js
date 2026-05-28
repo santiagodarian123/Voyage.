@@ -85,14 +85,16 @@ document.addEventListener('click',e=>{
   }
 });
 
-// ===== MORE SHEET (bottom tab bar overflow) =====
-function toggleMoreSheet(e){
+// ===== MOBILE DRAWER =====
+function toggleDrawer(e){
   if(e)e.stopPropagation();
-  document.getElementById('more-sheet-backdrop').classList.toggle('open');
+  document.getElementById('drawer-backdrop').classList.toggle('open');
+  document.getElementById('hamburger-btn').classList.toggle('open');
 }
-function closeMoreSheet(e){
-  if(e&&e.target!==e.currentTarget&&!e.target.closest('.more-sheet-item'))return;
-  document.getElementById('more-sheet-backdrop').classList.remove('open');
+function closeDrawer(e){
+  if(e&&e.target!==e.currentTarget&&!e.target.closest('.drawer-item'))return;
+  document.getElementById('drawer-backdrop').classList.remove('open');
+  document.getElementById('hamburger-btn').classList.remove('open');
 }
 function deSelectFromCard(){deselectTrip()}
 function tripXClick(id,btn){
@@ -135,7 +137,6 @@ function openTripModal(id=null){
   editingTripId=id;selectedColor=0;
   const t=id?loadData(KEYS.trips).find(x=>x.id===id):null;
   document.getElementById('modal-trip-title').textContent=id?'Edit Trip':'New Trip';
-  document.getElementById('f-trip-name').value=t?.name||'';
   document.getElementById('f-trip-dest').value=t?.destination||'';
   document.getElementById('f-trip-country').value=t?.country||'';
   document.getElementById('f-trip-cat').value=t?.category||'City 🏙';
@@ -156,12 +157,10 @@ function openTripModal(id=null){
   renderSwatches();openModal('modal-trip');
 }
 function saveTrip(){
-  const name=document.getElementById('f-trip-name').value.trim();
   const dest=document.getElementById('f-trip-dest').value.trim();
   const start=document.getElementById('f-trip-start').value;
   const end=document.getElementById('f-trip-end').value;
   let ok=true;
-  if(!name){shake('f-trip-name');ok=false}
   if(!dest){shake('f-trip-dest');ok=false}
   if(!start){shake('f-trip-start');ok=false}
   if(!end){shake('f-trip-end');ok=false}
@@ -169,7 +168,7 @@ function saveTrip(){
   const trips=loadData(KEYS.trips);
   const tripCurrency=document.getElementById('f-trip-currency').value||'USD';
   const obj={
-    id:editingTripId||generateId(),name,destination:dest,
+    id:editingTripId||generateId(),name:dest,destination:dest,
     country:document.getElementById('f-trip-country').value.trim(),
     category:document.getElementById('f-trip-cat').value,
     startDate:start,endDate:end,

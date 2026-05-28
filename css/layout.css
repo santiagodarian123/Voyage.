@@ -157,58 +157,90 @@
   .places-grid{grid-template-columns:repeat(2,1fr)}
   .events-grid{grid-template-columns:1fr}
 }
-/* BOTTOM TAB BAR (mobile only — hidden on desktop) */
-.bottom-nav{display:none}
-.more-sheet-backdrop{display:none}
+/* HAMBURGER + LEFT DRAWER (mobile only — hidden on desktop) */
+.hamburger-btn{display:none}
+.drawer-backdrop{display:none}
 
 @media(max-width:767px){
   /* Larger base font: 16px prevents iOS auto-zoom on input focus */
   html{font-size:16px}
 
-  /* Hide top-tab strip on mobile — bottom bar takes over */
-  .nav-tabs-wrap{display:none}
+  /* Hide top-tab strip on mobile — drawer takes over */
+  .nav-tabs-wrap{display:none !important}
 
-  /* Bottom tab bar */
-  .bottom-nav{display:flex;position:fixed;bottom:0;left:0;right:0;z-index:90;background:#1f1814;border-top:1px solid rgba(255,107,61,.18);padding:6px 4px calc(6px + env(safe-area-inset-bottom,0px));box-shadow:0 -4px 24px rgba(0,0,0,.18);justify-content:space-around;align-items:stretch}
-  .bottom-tab{flex:1;background:none;border:none;color:#a89d92;font-family:'DM Sans',sans-serif;font-size:.65rem;font-weight:500;padding:6px 2px;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;border-radius:10px;transition:color .25s ease,background .25s ease}
-  .bottom-tab svg{stroke:currentColor}
-  .bottom-tab.active{color:var(--rust);background:rgba(255,107,61,.1);text-shadow:0 0 6px rgba(255,107,61,.5)}
-  .bottom-tab.active svg{filter:drop-shadow(0 0 4px rgba(255,107,61,.5))}
-  .bottom-tab:active{transform:scale(.95)}
+  /* HAMBURGER BUTTON */
+  .hamburger-btn{display:flex;flex-direction:column;justify-content:center;gap:5px;width:40px;height:40px;background:rgba(255,255,255,.06);border:1px solid rgba(255,184,77,.25);border-radius:10px;cursor:pointer;padding:10px 8px;flex-shrink:0;transition:background .2s ease}
+  .hamburger-btn:active{background:rgba(255,184,77,.18)}
+  .hamburger-btn span{display:block;width:100%;height:2px;background:#ffd9c8;border-radius:2px;transition:transform .3s var(--ease-spring),opacity .2s ease}
+  .hamburger-btn.open span:nth-child(1){transform:translateY(7px) rotate(45deg)}
+  .hamburger-btn.open span:nth-child(2){opacity:0}
+  .hamburger-btn.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
 
-  /* MORE SHEET */
-  .more-sheet-backdrop{display:flex;position:fixed;inset:0;background:rgba(0,0,0,.45);backdrop-filter:blur(4px);z-index:300;align-items:flex-end;opacity:0;pointer-events:none;transition:opacity .25s ease}
-  .more-sheet-backdrop.open{opacity:1;pointer-events:all}
-  .more-sheet{width:100%;background:#fef6ec;border-radius:20px 20px 0 0;padding:8px 16px calc(20px + env(safe-area-inset-bottom,0px));transform:translateY(100%);transition:transform .35s var(--ease-spring)}
-  .more-sheet-backdrop.open .more-sheet{transform:translateY(0)}
-  .more-sheet-handle{width:40px;height:4px;background:var(--sand);border-radius:2px;margin:8px auto 14px}
-  .more-sheet-item{display:flex;align-items:center;gap:14px;width:100%;padding:14px 12px;background:none;border:none;border-radius:12px;font-family:'DM Sans',sans-serif;font-size:1rem;color:var(--ink);cursor:pointer;text-align:left;transition:background .2s ease}
-  .more-sheet-item:hover,.more-sheet-item:active{background:var(--sand)}
-  .more-sheet-icon{font-size:1.4rem;width:32px;text-align:center}
+  /* LEFT DRAWER */
+  .drawer-backdrop{display:flex;position:fixed;inset:0;background:rgba(0,0,0,.5);backdrop-filter:blur(4px);z-index:300;opacity:0;pointer-events:none;transition:opacity .3s ease}
+  .drawer-backdrop.open{opacity:1;pointer-events:all}
+  .drawer{width:78%;max-width:300px;height:100%;background:#1f1814;color:#fef6ec;padding:16px 0 calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-100%);transition:transform .35s var(--ease-spring);display:flex;flex-direction:column;box-shadow:4px 0 32px rgba(0,0,0,.4)}
+  .drawer-backdrop.open .drawer{transform:translateX(0)}
+  .drawer-header{display:flex;align-items:center;justify-content:space-between;padding:8px 20px 20px;border-bottom:1px solid rgba(255,107,61,.2)}
+  .drawer-title{font-family:'Playfair Display',serif;font-style:italic;font-weight:700;font-size:1.2rem;color:var(--rust);letter-spacing:1.5px;text-shadow:0 0 12px rgba(255,107,61,.4)}
+  .drawer-close{background:none;border:none;color:#a89d92;font-size:1.3rem;cursor:pointer;width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;transition:background .2s ease}
+  .drawer-close:active{background:rgba(255,255,255,.1)}
+  .drawer-tabs{display:flex;flex-direction:column;padding:12px 12px;gap:2px;flex:1}
+  .drawer-item{display:flex;align-items:center;gap:14px;width:100%;padding:14px 14px;background:none;border:none;border-radius:12px;font-family:'DM Sans',sans-serif;font-size:1rem;color:#a89d92;cursor:pointer;text-align:left;transition:background .2s ease,color .2s ease}
+  .drawer-item:active{background:rgba(255,107,61,.08)}
+  .drawer-item.active{background:linear-gradient(135deg,rgba(255,107,61,.2),rgba(255,184,77,.15));color:#fef6ec;box-shadow:inset 0 0 0 1px rgba(255,107,61,.4)}
+  .drawer-icon{font-size:1.3rem;width:30px;text-align:center}
 
-  /* Reserve space at the bottom of the page so content isn't hidden under the bar */
-  body{padding-bottom:calc(64px + env(safe-area-inset-bottom,0px))}
-
-  /* FAB sits above bottom bar */
-  #fab{bottom:calc(76px + env(safe-area-inset-bottom,0px))}
-
-  /* Nav at top: now just logo + settings (no tabs) */
-  #app{padding-top:64px}
-
-  /* Nav */
+  /* Top nav layout: hamburger + logo + settings, single row */
   #nav{padding:0 12px}
-  .nav-top{flex-wrap:wrap;height:auto;padding:8px 0;gap:6px}
-  .nav-logo{flex:1}
+  .nav-top{height:60px;padding:0;gap:10px}
+  .nav-logo{flex:1;justify-content:center;display:flex}
   .logo-mark{width:140px;height:48px}
   .logo-mark svg{width:140px;height:48px}
   .logo-text{left:37px;font-size:13px;letter-spacing:1.5px}
-  .nav-tabs-wrap{order:3;width:100%;padding-bottom:4px}
-  .tab-btn{padding:10px 14px;font-size:.88rem;min-height:44px}
-  .nav-right{gap:8px}
+  .nav-right{gap:8px;flex-shrink:0}
   .settings-btn{width:40px;height:40px;font-size:1.1rem}
+
+  #app{padding-top:60px}
+
+  /* FAB */
+  #fab{bottom:calc(20px + env(safe-area-inset-bottom,0px));right:16px;width:56px;height:56px}
 
   /* Layout */
   .tab-content{padding:18px 14px env(safe-area-inset-bottom,16px)}
+
+  /* Hide buttons that the FAB replaces on mobile */
+  .mobile-hidden{display:none !important}
+
+  /* Trip cards: photo-forward on mobile (big cover, prominent text) */
+  .trip-card-header{height:160px}
+  .trip-card-body{padding:18px}
+  .trip-dest{font-size:1.55rem;margin-bottom:4px}
+  .trip-country{font-size:.92rem;margin-bottom:10px}
+  .trip-dates{font-size:.88rem;margin-bottom:6px}
+  .trip-days{font-size:.82rem;margin-bottom:12px}
+
+  /* Cards */
+  .cards-grid,.places-grid,.events-grid{grid-template-columns:1fr;gap:14px}
+  .budget-summary{grid-template-columns:repeat(2,1fr) !important;gap:10px}
+  .budget-summary .stat-card{padding:14px 12px}
+  .stat-value{font-size:1.2rem}
+
+  /* Touch targets — 44×44 min everywhere */
+  .icon-btn{width:40px;height:40px;font-size:1.05rem}
+  .filter-pill{padding:8px 14px;min-height:36px}
+  .reorder-btn{width:32px;height:32px;font-size:.85rem}
+
+  /* Modals — bottom sheet pattern */
+  .modal-backdrop{padding:0;align-items:flex-end}
+  .modal-box{border-radius:20px 20px 0 0;max-height:92vh;max-width:none}
+  .modal-header{padding:18px 18px 0}
+  .modal-body{padding:16px 18px;padding-bottom:calc(16px + env(safe-area-inset-bottom,0px))}
+  .modal-footer{padding:0 18px 18px;padding-bottom:calc(18px + env(safe-area-inset-bottom,0px))}
+  .form-row{grid-template-columns:1fr;gap:0}
+  .form-input,.form-select,.form-textarea{font-size:16px;padding:12px 14px}
+
+  /* Day panel becomes full screen */
 
   /* Hide buttons that the FAB replaces on mobile */
   .mobile-hidden{display:none !important}
@@ -259,8 +291,8 @@
   .timeline{padding-left:36px}
   .stop-dot{left:-29px}
 
-  /* Footer extra room above home indicator + bottom tab bar */
-  .site-footer{padding:32px 16px calc(96px + env(safe-area-inset-bottom,0px));font-size:.78rem}
+  /* Footer extra room above home indicator */
+  .site-footer{padding:32px 16px calc(32px + env(safe-area-inset-bottom,0px));font-size:.78rem}
 
   /* Active trip pill — narrower */
   .active-trip-pill{max-width:120px;font-size:.75rem}
