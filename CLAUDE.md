@@ -68,13 +68,39 @@ Form inputs use `font-size: 16px` on mobile — anything smaller triggers iOS's 
 
 ### Settings dropdown
 
-Currency selector + Export/Import live in a single ⚙ button in the nav-right. Markup is built dynamically inside `updateNavTrip()` in `app.js`. Open/close is handled by `toggleSettings()` plus a document-level click listener that closes the menu when clicking outside `.settings-wrap`. If you add new settings, put them inside `#settings-menu` rather than as new top-level nav items.
+The ⚙ button in the nav-right opens a dropdown built dynamically inside `updateNavTrip()`. It only contains **Export / Import data** now — currency lives on each trip (see below). Open/close is handled by `toggleSettings()` plus a document-level click listener that closes the menu when clicking outside `.settings-wrap`.
+
+### Currency
+
+Each trip stores its own currency (`trip.currency`). The picker is in the trip modal (`#f-trip-currency`), not in settings. Saving a trip with a non-active currency switches `activeCurrency` globally and persists it to `localStorage` under `voyage_currency`. Selecting a different active trip via `setActiveTrip()` (in `storage.js`) also auto-switches the active currency to that trip's. So the Budget tab always renders in the active trip's currency.
+
+`activeCurrency` is a `let` in `storage.js`. `fmt(n)` is the only formatter — use it everywhere money is rendered.
+
+### Record fields worth knowing
+
+- **trip**: `id, name, destination, country, category, startDate, endDate, totalBudget, currency, coverColor, coverImage (data URL), notes`
+- **expense**: `id, tripId, name, amount, category, date, notes, where, eventId?` (`eventId` only on auto-synced ones)
+- **event**: `id, tripId?, name, venue, date, time, category, ticketCost, confirmationCode, notes, coverImage (data URL), attachments[]`
+
+`coverImage` data URLs can blow `localStorage` quota — both `saveTrip` and `saveEvent` wrap `saveData(KEYS.x, ...)` in a try/catch that shows "Storage full — try removing the cover image". Keep that pattern when adding new image fields.
+
+### Mobile nav (bottom tab bar)
+
+Mobile uses a **fixed bottom tab bar** with 5 items: Trips, Plan (= Itinerary), Budget, Calendar, More. The desktop top-tab strip is hidden on mobile via `.nav-tabs-wrap { display: none !important }`. The bottom tabs share the `.tab-btn` class with `data-tab` attributes, so they wire into the same `setActiveTab()` dispatcher in `app.js`.
+
+The "More" button opens a slide-up sheet (`#more-sheet-backdrop`) with Events, Places, and Documents. Open/close via `toggleMoreSheet()` / `closeMoreSheet()`.
+
+Body has `padding-bottom: 64px + safe-area-inset-bottom` on mobile to clear the bar. FAB and dunes are positioned relative to the bottom bar (not the viewport bottom) — if you change the bar height, update those offsets too.
+
+The dev-credit footer is fixed top-right on mobile (small, low-opacity), not in document flow.
 
 ### Animated background (dunes + camel)
 
 The drifting desert is markup at the top of `<body>` (`.dunes` wrapper) styled in `layout.css`. Three SVG dune layers are 200vw wide and animate `translateX(-100vw)` over different durations for parallax. The wave paths use repeating `T` shorthand at fixed wavelengths so the loop is seamless — **don't change the path coords without recalculating wavelength × translate distance**, or you'll get a visible snap.
 
 The camel is a separate `<svg class="camel">` inside `.dunes`. Position is controlled by `bottom: <n>%` (currently 24%). Walk + bob + leg-swing are three independent keyframes. Respects `prefers-reduced-motion`.
+
+On mobile the dunes are lifted with `bottom: 64px + safe-area-inset-bottom` so they sit above the bottom tab bar instead of behind it.
 
 The "Travel smart, spend wiser" tagline used to live in the nav. It now appears as a `<p>` inside the Trips tab header — don't add it back to the nav.
 
@@ -86,7 +112,31 @@ The "Travel smart, spend wiser" tagline used to live in the nav. It now appears 
 - **Motion curves** also in `base.css`: `--ease-silk` (settling), `--ease-spring` (bouncy overshoot), `--ease-snap` (fast hover). Use these instead of bespoke `cubic-bezier` calls.
 - **Card actions** (`.card-actions` with edit/delete) are always visible (not hover-revealed) because hover doesn't exist on touch — keep it that way.
 - **Mobile breakpoints** in `layout.css`: `@media (max-width: 767px)` is the primary mobile block, `@media (max-width: 380px)` handles iPhone SE / very small phones. Touch targets are 40-44px minimum.
+- **One source of truth for tab switching**: `setActiveTab(tab)` in `app.js`. Don't hand-roll `classList.add('active')` on tab buttons elsewhere — call `setActiveTab()` so both the top tabs (desktop) and bottom tabs (mobile) stay in sync.
 
 ## Deployment
 
-`git push` to the `main` branch. GitHub Pages serves directly from root. No CI, no build artifacts. Test locally by opening `index.html` in Chrome/Edge (with DevTools open) — VS Code's preview pane has known event/CSS quirks and is **not a substitute for a real browser**.
+`git push` to the `main` branch. GitHub Pages serves directly from root. No CI, no build artifacts.
+
+### Cache-busting on every release
+
+This is **load-bearing**. iOS Safari caches CSS/JS aggressively — a `git push` does not mean users see the new code. Every CSS/JS include in `index.html` has a `?v=N` query string:
+
+```html
+<link rel="stylesheet" href="css/layout.css?v=8">
+<script src="js/app.js?v=8"></script>
+```
+
+**Bump the number on every push that changes CSS/JS.** Easy one-liner from the repo root:
+
+```bash
+sed -i 's/?v=8/?v=9/g' index.html
+```
+
+If you ship a fix and the user reports "still broken on my phone," 90% of the time the cache-bust wasn't bumped. Without it: hours of "but I pushed it" debugging.
+
+### Testing
+
+Open `index.html` in Chrome (right-click in Explorer → Open with → Chrome). Press **F12** for DevTools, **Ctrl+Shift+M** for device-toolbar mode, pick "iPhone 14 Pro" or similar. **Don't trust VS Code's preview pane** — it has event/CSS quirks that don't match real browsers. The user has hit this multiple times.
+
+For iPhone testing: after pushing, fully close the Safari tab (swipe away) and reopen. If still stale: Settings → Safari → Clear History and Website Data.
