@@ -203,14 +203,16 @@
   body{padding-bottom:calc(64px + env(safe-area-inset-bottom,0px))}
 
   /* FAB sits well above bottom bar */
-  #fab{bottom:calc(86px + env(safe-area-inset-bottom,0px));right:16px;width:56px;height:56px}
+  #fab{bottom:calc(96px + env(safe-area-inset-bottom,0px));right:14px;width:52px;height:52px;font-size:1.4rem;box-shadow:0 6px 20px rgba(255,107,61,.6)}
 
   /* Dunes shift up so they're visible above the bottom bar */
   .dunes{bottom:calc(64px + env(safe-area-inset-bottom,0px));height:30vh;min-height:200px;max-height:320px}
 
-  /* Footer: right-aligned and stacked on mobile */
-  .site-footer{display:flex;flex-direction:column;align-items:flex-end;text-align:right;padding:24px 16px calc(20px + env(safe-area-inset-bottom,0px));font-size:.78rem;line-height:1.4}
-  .footer-line+.footer-line{margin-left:0;margin-top:2px}
+  /* Footer: tiny fixed pill in the very top-right of the page */
+  .site-footer{position:fixed;top:calc(72px + env(safe-area-inset-top,0px));right:8px;display:flex;flex-direction:column;align-items:flex-end;text-align:right;padding:0;font-size:.6rem;line-height:1.25;z-index:50;color:var(--mist);opacity:.65;pointer-events:auto;background:none}
+  .site-footer a{font-size:.6rem}
+  .footer-line{display:block}
+  .footer-line+.footer-line{margin:1px 0 0}
 
   /* Layout */
   .tab-content{padding:18px 8px env(safe-area-inset-bottom,16px)}
@@ -287,9 +289,6 @@
 
   /* Day panel becomes full screen */
   #day-panel{width:100%;top:0;padding:18px;padding-bottom:calc(18px + env(safe-area-inset-bottom,0px))}
-
-  /* FAB */
-  #fab{bottom:calc(20px + env(safe-area-inset-bottom,0px));right:16px;width:56px;height:56px}
 
   /* Calendar — let it scroll horizontally if cramped */
   .cal-grid-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
